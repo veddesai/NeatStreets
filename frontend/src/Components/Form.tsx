@@ -61,7 +61,7 @@ const Form: React.FC<Props> = ({ type }) => {
     <>
       <div className="h-screen w-screen flex justify-center items-center">
         <div className="form-container rounded-md sm:flex sm:flex-row-reverse w-max max-md:w-[75%] max-xs:w-[95%] shadow-2xl shadow-slate-500">
-          <div className="signup-form rounded-md md:w-[50%] p-6 max-md:p-8 bg-white">
+          <div className="signup-form rounded-md md:w-[65%] p-6 max-md:p-8 bg-white">
             <form className="flex flex-col" onSubmit={handleSubmit}>
               <h2 className="text-center capitalize leading-10 font-bold text-3xl my-4">
                 {(type === "signIn" && "Login") ||
