@@ -61,7 +61,7 @@ const Form: React.FC<Props> = ({ type }) => {
     <>
       <div className="h-screen w-screen flex justify-center items-center">
         <div className="form-container rounded-md sm:flex sm:flex-row-reverse w-max max-md:w-[75%] max-xs:w-[95%] shadow-2xl shadow-slate-500">
-          <div className="signup-form rounded-md md:w-[65%] p-6 max-md:p-8 bg-white">
+          <div className="signup-form rounded-md md:w-[60%] p-6 max-md:p-8 bg-white">
             <form className="flex flex-col" onSubmit={handleSubmit}>
               <h2 className="text-center capitalize leading-10 font-bold text-3xl my-4">
                 {(type === "signIn" && "Login") ||
@@ -81,6 +81,7 @@ const Form: React.FC<Props> = ({ type }) => {
                     placeholder="Password"
                     required
                   />
+                  <Link className=" sm:hidden text-center font-semibold" to={"/signup"}>Don't have any account?<br/><span className="underline">Sign Up!</span></Link>
                 </>
               )}
               {type === "signUp" && (
@@ -115,6 +116,8 @@ const Form: React.FC<Props> = ({ type }) => {
                     placeholder="Password"
                     required
                   />
+
+                  <Link className=" sm:hidden text-center font-semibold" to={"/signin"}>Already have an account?<br/><span className="underline">Sign In!</span></Link>
                 </>
               )}
               <button
@@ -126,7 +129,7 @@ const Form: React.FC<Props> = ({ type }) => {
               </button>
             </form>
           </div>
-          <div className="extra-card gap-10 rounded-md max-sm:hidden flex flex-col justify-center text-center bg-blue-500 text-white">
+          <div className="extra-card px-2 gap-10 rounded-md max-sm:hidden flex flex-col justify-center text-center bg-blue-500 text-white">
             <h2 className="text-4xl font-bold">Welcome Back!</h2>
             <p>
               To keep connected with us please{" "}
