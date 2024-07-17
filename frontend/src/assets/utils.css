@@ -1,0 +1,17 @@
+
+
+form > input {
+  background-color: #eee;
+  margin: 1rem 0;
+  padding: 0.5rem 0.5rem;
+  outline: 0;
+}
+
+.signup-form {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
+.extra-card {
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
