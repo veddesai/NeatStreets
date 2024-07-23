@@ -1,10 +1,11 @@
-import Form from "../Components/Form"
-
+import Form from "../Components/Form";
 
 const Signup: React.FC = () => {
   return (
-    <Form type="signIn"/>
-  )
-}
+    <>
+      <Form type="signIn" />
+    </>
+  );
+};
 
-export default Signup
+export default Signup;

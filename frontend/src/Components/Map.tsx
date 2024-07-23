@@ -9,13 +9,13 @@ import "maplibre-gl/dist/maplibre-gl.css";
  */
 const Map: React.FC = () => {
   const mapRef = useRef<L.Map | null>(null);
-
+  console.log(mapRef)
   useEffect(() => {
-    const lat = 1;
-    const long = 1;
+    const lat = 27.176469131898898;
+    const long = 30.90805854342192;
 
     if (mapRef.current === null) {
-      const map = L.map("map").setView([lat, long], 13);
+      const map = L.map("map").setView([lat, long], 2);
       mapRef.current = map;
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -33,6 +33,6 @@ const Map: React.FC = () => {
     };
   }, []);
 
-  return <div id="map" style={{ height: "100vh", width: "100%" }}></div>;
+  return <div id="map" style={{ height: "50vh", width: "50%" }}></div>;
 };
 export default Map;
