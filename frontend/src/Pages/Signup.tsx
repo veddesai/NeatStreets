@@ -1,9 +1,12 @@
 import Form from "../Components/Form";
+import Navbar from "../Components/Navbar";
 
 const Signup: React.FC = () => {
   return (
     <>
-      <Form type="signUp" /> 
+      <Navbar />
+      
+      <Form type="signUp" />
     </>
   );
 };

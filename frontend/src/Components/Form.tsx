@@ -1,8 +1,7 @@
-import { FormEvent } from "react";
+import { FormEvent} from "react";
 import "../assets/utils.css";
 import { Link, useNavigate } from "react-router-dom";
-
-// import axios from "axios";
+import axios from "axios";
 
 interface Props {
   type: "signIn" | "signUp";
@@ -10,8 +9,7 @@ interface Props {
 
 interface SignUpFormData {
   username: string;
-  firstname: string;
-  lastname: string;
+  fullname: string;
   email: string;
   password: string;
 }
@@ -32,39 +30,47 @@ const Form: React.FC<Props> = ({ type }) => {
       email: { value: string };
       password: { value: string };
       username?: { value: string };
-      firstname?: { value: string };
-      lastname?: { value: string };
+      fullname?: { value: string };
     };
 
     let formData: FormData;
     if (type === "signUp") {
       formData = {
         username: target.username!.value,
-        firstname: target.firstname!.value,
-        lastname: target.lastname!.value,
+        fullname: target.fullname!.value,
         email: target.email.value,
         password: target.password.value,
       } as SignUpFormData;
+
+      await axios.post("http://localhost:8080/api/v1/auth/signup", formData);
     } else {
-      
       formData = {
         email: target.email.value,
         password: target.password.value,
       } as SignInFormData;
+
+      await axios.post("http://localhost:8080/api/v1/auth/signin", formData);
     }
 
-    console.log(formData);
-
-    const route = type === "signUp" ? "/signin" : "/";
-    
-    navigate(route);
+    setInterval(() => {
+      const route = type === "signUp" ? "/signin" : "/";
+      navigate(route);
+    }, 1000);
   };
 
   return (
     <>
-      <div className=" h-screen w-screen flex justify-center items-center">
-      <div className={`form-container rounded-md sm:flex ${isFlexRowReverse ? 'sm:flex-row-reverse' : 'sm:flex-row'} w-max max-md:w-[75%] max-xs:w-[95%] shadow-2xl shadow-slate-500`}>
-          <div className={`${isFlexRowReverse ? 'signup-form' : 'extra-card'} rounded-md md:w-[60%] p-6 max-md:p-8 bg-white`}>
+      <div className=" h-screen w-[100%] flex flex-col fixed items-center py-9 bg-white dark:bg-slate-800">
+        <div
+          className={`form-container rounded-md sm:flex ${
+            isFlexRowReverse ? "sm:flex-row-reverse" : "sm:flex-row"
+          } w-max max-md:w-[75%] max-xs:w-[95%] shadow-lg dark:shadow-slate-900`}
+        >
+          <div
+            className={`${
+              isFlexRowReverse ? "signup-form" : "extra-card"
+            } rounded-md md:w-[60%] p-6 max-md:p-8 dark:bg-slate-800 bg-white dark:text-white text-black`}
+          >
             <form className="flex flex-col" onSubmit={handleSubmit}>
               <h2 className="text-center capitalize leading-10 font-bold text-3xl my-4">
                 {(type === "signIn" && "Login") ||
@@ -73,12 +79,14 @@ const Form: React.FC<Props> = ({ type }) => {
               {type === "signIn" && (
                 <>
                   <input
+                    className=" mt-10 dark:bg-slate-700 dark:text-white"
                     type="email"
                     name="email"
                     placeholder="Email"
                     required
                   />
                   <input
+                    className=" mb-10 dark:bg-slate-700 dark:text-white"
                     type="password"
                     name="password"
                     placeholder="Password"
@@ -98,30 +106,29 @@ const Form: React.FC<Props> = ({ type }) => {
                 <>
                   <input
                     type="text"
+                    className=" dark:bg-slate-700 dark:text-white"
                     name="username"
                     placeholder="Username"
                     required
                   />
                   <input
                     type="text"
-                    name="firstname"
-                    placeholder="Firstname"
+                    className=" dark:bg-slate-700 dark:text-white"
+                    name="fullname"
+                    placeholder="Fullname"
                     required
                   />
-                  <input
-                    type="text"
-                    name="lastname"
-                    placeholder="Lastname"
-                    required
-                  />
+
                   <input
                     type="email"
+                    className=" dark:bg-slate-700 dark:text-white"
                     name="email"
                     placeholder="Email"
                     required
                   />
                   <input
                     type="password"
+                    className=" dark:bg-slate-700 dark:text-white"
                     name="password"
                     placeholder="Password"
                     required
@@ -138,7 +145,7 @@ const Form: React.FC<Props> = ({ type }) => {
                 </>
               )}
               <button
-                className="m-auto my-4 py-2 px-6 uppercase font-bold bg-blue-500 w-fit rounded-full text-white"
+                className="m-auto my-4 py-2 px-6 uppercase font-bold bg-blue-600 dark:bg-blue-900 w-fit rounded-full text-white"
                 type="submit"
               >
                 {(type === "signIn" && "Sign In") ||
@@ -146,7 +153,11 @@ const Form: React.FC<Props> = ({ type }) => {
               </button>
             </form>
           </div>
-          <div className={`${isFlexRowReverse ? 'extra-card' : 'signup-form'} px-2 gap-10 rounded-md max-sm:hidden flex flex-col justify-center text-center bg-blue-500 text-white`}>
+          <div
+            className={`${
+              isFlexRowReverse ? "extra-card" : "signup-form"
+            } px-2 gap-10 rounded-md max-sm:hidden flex flex-col justify-center text-center bg-blue-600 dark:bg-blue-900 text-white`}
+          >
             <h2 className="text-4xl font-bold">Welcome Back!</h2>
             <p>
               To keep connected with us please{" "}
@@ -154,7 +165,7 @@ const Form: React.FC<Props> = ({ type }) => {
               info
             </p>
             <Link to={type === "signIn" ? "/signup" : "/signin"}>
-              <button className="uppercase font-bold border-2 border-white rounded-full w-fit mx-auto py-2 px-8">
+              <button className="uppercase font-bold border-2 dark:border-white rounded-full w-fit mx-auto py-2 px-8">
                 {type === "signIn" ? "Sign up" : "Sign in"}
               </button>
             </Link>
