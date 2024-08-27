@@ -5,6 +5,7 @@ import Signup from './Pages/Signup'
 import Signin from './Pages/Signin'
 import Home from './Pages/Home'
 import Trashmap from './Pages/Trashmap'
+import Verification from './Pages/Verification'
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/signin" element={<Signin/>} />
           <Route path="/signup" element={<Signup/>} />
           <Route path="/trashmap" element={<Trashmap/>} />
+          <Route path="/verify" element={<Verification/>} />
         </Routes>
       
     </Router>

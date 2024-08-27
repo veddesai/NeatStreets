@@ -1,12 +1,13 @@
-import { animate, motion } from "framer-motion";
+
+import Hero from "../Components/Hero";
 import Navbar from "../Components/Navbar";
 
 const Home = () => {
   return (
     <>
       <Navbar />
-
-      <div className="overflow-x-hidden p-6 mt-5">
+      <div className="overflow-x-hidden text-wrap dark:text-white">
+        <Hero/>
         
       </div>
     </>
