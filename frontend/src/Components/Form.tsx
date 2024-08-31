@@ -3,8 +3,8 @@ import "../assets/utils.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../config/config";
-import SkeletonLoader from "./SkeletonLoader"; 
-
+import SkeletonLoader from "./SkeletonLoader";
+import { motion } from "framer-motion";
 interface Props {
   type: "signIn" | "signUp";
 }
@@ -32,7 +32,7 @@ const Form: React.FC<Props> = ({ type }) => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setError(null); 
+    setError(null);
 
     const target = e.target as typeof e.target & {
       email: { value: string };
@@ -77,10 +77,13 @@ const Form: React.FC<Props> = ({ type }) => {
 
   return (
     <div className="h-screen w-full flex flex-col fixed items-center py-20 bg-white dark:bg-slate-800">
-      <div
+      <motion.div
         className={`form-container rounded-md sm:flex ${
           isFlexRowReverse ? "sm:flex-row-reverse" : "sm:flex-row"
         } w-max max-md:w-[75%] max-xs:w-[95%] shadow-lg dark:shadow-slate-900`}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
       >
         <div
           className={`${
@@ -127,7 +130,7 @@ const Form: React.FC<Props> = ({ type }) => {
                   placeholder="Username"
                   required
                 />
-                
+
                 <input
                   type="email"
                   className="dark:bg-slate-700 dark:text-white"
@@ -158,7 +161,11 @@ const Form: React.FC<Props> = ({ type }) => {
               type="submit"
               disabled={loading}
             >
-              {loading ? "Loading..." : (type === "signIn" ? "Sign In" : "Sign Up")}
+              {loading
+                ? "Loading..."
+                : type === "signIn"
+                ? "Sign In"
+                : "Sign Up"}
             </button>
           </form>
         </div>
@@ -170,8 +177,7 @@ const Form: React.FC<Props> = ({ type }) => {
           <h2 className="text-4xl font-bold">Welcome Back!</h2>
           <p>
             To keep connected with us please{" "}
-            {type === "signIn" ? "Sign up" : "Sign in"} with your personal
-            info
+            {type === "signIn" ? "Sign up" : "Sign in"} with your personal info
           </p>
           <Link to={type === "signIn" ? "/signup" : "/signin"}>
             <button className="uppercase font-bold border-2 dark:border-white rounded-full w-fit mx-auto py-2 px-8">
@@ -179,7 +185,7 @@ const Form: React.FC<Props> = ({ type }) => {
             </button>
           </Link>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

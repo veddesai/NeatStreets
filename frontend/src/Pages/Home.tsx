@@ -1,4 +1,5 @@
 
+import TrashSection from "../Components/TrashSection";
 import Hero from "../Components/Hero";
 import Navbar from "../Components/Navbar";
 
@@ -6,9 +7,10 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="overflow-x-hidden text-wrap dark:text-white">
+      <div className=" text-wrap dark:text-white">
         <Hero/>
-        
+        <TrashSection/>
+        .
       </div>
     </>
   );
