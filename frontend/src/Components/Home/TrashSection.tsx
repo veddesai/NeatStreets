@@ -1,9 +1,13 @@
-import ImgCard from "./ImgCard";
-
+import ImgCard from "../ImgCard";
+import { motion } from "framer-motion";
 const TrashSection: React.FC = () => {
-
   return (
-    <div className="p-16 bg-slate-50 border dark:bg-slate-900">
+    <motion.div
+      className="p-16 bg-slate-100 dark:bg-slate-900"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <h1 className="font-bold text-blue-800 uppercase dark:text-yellow-500 text-center text-5xl max-lg:text-4xl">
         What Comes under Trash?
       </h1>
@@ -20,7 +24,7 @@ const TrashSection: React.FC = () => {
           description="Dry Waste includes non-biodegradable materials like plastics, metals, and paper. It can often be recycled, reducing environmental impact."
         />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
