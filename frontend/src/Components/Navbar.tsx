@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
             navigator("/");
           }}
           className="invert  dark:invert-0"
-          src="/src/assets/NeatStreets.png"
+          src="/NeatStreets.png"
           alt="NeatStreets"
         />
       </div>

@@ -14,16 +14,19 @@ const TrashSection: React.FC = () => {
       <div className="flex max-md:flex-col justify-between md:p-12 mt-4 gap-8">
         <ImgCard
           title="Wet Waste"
-          imageUrl="/src/assets/wet_waste.png"
+          imageUrl="/wet_waste.png"
           description="Wet Waste consists of biodegradable materials like food scraps and organic matter. It decomposes naturally and can be composted to reduce landfill use."
         />
 
         <ImgCard
           title="Dry Waste"
-          imageUrl="/src/assets/dry_waste.png"
+          imageUrl="/dry_waste.png"
           description="Dry Waste includes non-biodegradable materials like plastics, metals, and paper. It can often be recycled, reducing environmental impact."
         />
       </div>
+      <h3 className="font-light text-center text-3xl text-blue-800 dark:text-yellow-400">
+        "Clean Communities, Happy Lives."
+      </h3>
     </motion.div>
   );
 };

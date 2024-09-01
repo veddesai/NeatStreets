@@ -8,7 +8,7 @@ const HowItWorks = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h1 className="max-md:p-8 font-bold text-blue-800 uppercase dark:text-yellow-500 text-center text-5xl max-lg:text-4xl">
+      <h1 className="font-bold text-blue-800 uppercase dark:text-yellow-500 text-center text-5xl max-lg:text-4xl">
         HOW NEATSTREETS WORKS?
       </h1>
       <WorkFlow />
