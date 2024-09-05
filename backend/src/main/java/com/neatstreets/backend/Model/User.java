@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "app_user")
+@Table(name = "neatstreets_users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,6 +40,7 @@ public class User implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
@@ -63,21 +64,25 @@ public class User implements UserDetails {
         return email;
     }
 
+    @Transient
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @Transient
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @Transient
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @Transient
     @Override
     public boolean isEnabled() {
         return true;

@@ -1,2 +1,4 @@
-package com.neatstreets.backend.service;public class UserService {
+package com.neatstreets.backend.service;
+
+public class UserService {
 }

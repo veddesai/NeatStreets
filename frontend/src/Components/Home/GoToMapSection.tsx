@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 const GoToMapSection = () => {
   return (
     <motion.div
+      id="map"
       className={`p-16 lg:gap-x-8 flex flex-col gap-y-16 items-center w-full`}
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}

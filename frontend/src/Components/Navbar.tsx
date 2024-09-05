@@ -1,14 +1,51 @@
 import { Link, useNavigate } from "react-router-dom";
 import DarkModeToggle from "./DarkModeToggle";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useState } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import AuthButton from "./AuthButton";
+import { AuthContext } from "../context/AuthContext";
 
 const Navbar: React.FC = () => {
+  const authContext = useContext(AuthContext);
+  if (authContext === undefined) {
+    throw new Error("AuthContext must be used within an AuthProvider");
+  }
+  const { user, isAuthenticated } = authContext;
   const [taskbar, setTaskbar] = useState<boolean>(false);
+
   const navigator = useNavigate();
+  const navbarRef = useRef<HTMLUListElement>(null);
   function toggleMenu(): void {
     setTaskbar((prevTaskbar) => !prevTaskbar);
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        navbarRef.current &&
+        !navbarRef.current.contains(event.target as Node)
+      ) {
+        setTaskbar(false);
+      }
+    };
+
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setTaskbar(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  function showDragdown(event: MouseEvent): void {
+    //i was here yesterday -- ved
   }
 
   return (
@@ -30,10 +67,24 @@ const Navbar: React.FC = () => {
             ? "flex-col border-l-[1px] border-r-[1px] border-b-[1px] dark:border-white absolute top-full left-[50%] w-[50%]  bg-slate-100 dark:bg-slate-800"
             : "max-md:hidden gap-10"
         } flex text-center`}
+        ref={navbarRef}
       >
         {taskbar && (
           <li className="py-3 border-b-[1px] dark:border-white">
-            <AuthButton className="text-blue-600 dark:text-yellow-400" />
+            {isAuthenticated ? (
+              <Link
+                onMouseOver={showDragdown}
+                className="text-blue-600 dark:text-yellow-500 border-b-2 border-current"
+                to={"/profile"}
+              >
+                {user?.username}
+              </Link>
+            ) : (
+              <AuthButton
+                type="signUp"
+                className="text-blue-600 dark:text-yellow-400"
+              />
+            )}
           </li>
         )}
         <li
@@ -43,6 +94,15 @@ const Navbar: React.FC = () => {
         >
           <Link to="/" className="text-xl font-semibold">
             Home
+          </Link>
+        </li>
+        <li
+          className={`${
+            taskbar === true ? "py-3 border-b-[1px] dark:border-white" : ""
+          }`}
+        >
+          <Link to="/trashmap" className="text-xl font-semibold">
+            Trashmap
           </Link>
         </li>
         <li
@@ -77,8 +137,20 @@ const Navbar: React.FC = () => {
             <GiHamburgerMenu className="size-6" />
           </button>
         </div>
-
-        <AuthButton className="max-md:hidden px-4 py-2 bg-blue-600 dark:bg-yellow-500 text-white rounded-full" />
+        {isAuthenticated ? (
+          <Link
+            className="max-md:hidden px-4 py-2 bg-blue-600 dark:bg-yellow-500 text-white rounded-full"
+            to={"/profile"}
+          >
+            {" "}
+            {user?.username?.charAt(0)}{" "}
+          </Link>
+        ) : (
+          <AuthButton
+            type="signUp"
+            className="max-md:hidden px-4 py-2 bg-blue-600 dark:bg-yellow-500 text-white rounded-full"
+          />
+        )}
       </ul>
     </nav>
   );

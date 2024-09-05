@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
 
 interface AuthButtonProps {
-    className?: string;
+  className?: string,
+  type: "signUp" | "signOut"
 }
 
-const AuthButton: React.FC<AuthButtonProps> = ({className}) => {
-  return (
+const AuthButton: React.FC<AuthButtonProps> = ({ className,type }) => {
   
-      <button className={className}>
-        <Link className="font-bold" to={"/signup"}>SIGNUP</Link>
-      </button>
-    
+
+  return (
+    <button className={className}>
+      <Link className="font-bold" to={"/"+ type.toLowerCase()}>{type.toUpperCase()}</Link>
+    </button>
   );
 };
 

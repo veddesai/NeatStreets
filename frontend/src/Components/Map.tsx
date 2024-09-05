@@ -5,7 +5,9 @@ import { useEffect, useRef, useState } from "react";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
-
+import markerIconPng from "leaflet/dist/images/marker-icon.png"; // Default marker icon
+import markerIconRetinaPng from "leaflet/dist/images/marker-icon-2x.png"; // Retina version
+import markerShadowPng from "leaflet/dist/images/marker-shadow.png"; // Shadow
 
 const Map: React.FC = () => {
   const mapRef = useRef<L.Map | null>(null);
@@ -15,36 +17,20 @@ const Map: React.FC = () => {
     lng: 0,
   });
 
- 
+  const customIcon = L.icon({
+    iconUrl: markerIconPng,
+    iconRetinaUrl: markerIconRetinaPng,
+    shadowUrl: markerShadowPng, // Remove or leave depending on shadow
+    iconSize: [25, 41], // Default size
+    iconAnchor: [12, 41], // Position of the "tip"
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41], // Shadow size
+  });
 
   useEffect(() => {
-    const storedLatitude = localStorage.getItem("latitude");
-    const storedLongitude = localStorage.getItem("longitude");
-
-    if (storedLatitude && storedLongitude) {
-      setPosition({
-        lat: parseFloat(storedLatitude),
-        lng: parseFloat(storedLongitude),
-      });
-    } else {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setPosition({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-          localStorage.setItem("latitude", position.coords.latitude.toString());
-          localStorage.setItem("longitude", position.coords.longitude.toString());
-        },
-        (error) => {
-          console.error("Error getting location : ", error);
-        }
-      );
-    }
-
     if (mapRef.current === null) {
       const map = L.map("map").setView([position.lat, position.lng], 15);
-      const marker = L.marker([position.lat,position.lng]).addTo(map);
+      const marker = L.marker([position.lat,position.lng],{icon: customIcon}).addTo(map);
       mapRef.current = map;
       markerRef.current = marker;
       
@@ -60,13 +46,42 @@ const Map: React.FC = () => {
       mapRef.current.setView([position.lat, position.lng]);
     }
 
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        setPosition({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        localStorage.setItem(
+          "latitude",
+          position.coords.latitude.toString()
+        );
+        localStorage.setItem(
+          "longitude",
+          position.coords.longitude.toString()
+        );
+        if (markerRef.current) {
+          markerRef.current.setLatLng([position.coords.latitude, position.coords.longitude]);
+        }
+        if (mapRef.current) {
+          mapRef.current.setView([position.coords.latitude, position.coords.longitude]);
+        }
+      },
+      (error) => {
+        console.error("Error getting live location: ", error);
+      },
+      { enableHighAccuracy: true }
+    );
+
     return () => {
       if (mapRef.current !== null) {
         mapRef.current.remove();
         mapRef.current = null;
       }
+      navigator.geolocation.clearWatch(watchId);
     };
-  }, [position.lat, position.lng]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   
   return <div className={`fixed h-screen w-[100%] z-10 `} id="map"></div>;

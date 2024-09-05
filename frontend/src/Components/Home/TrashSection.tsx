@@ -2,7 +2,7 @@ import ImgCard from "../ImgCard";
 import { motion } from "framer-motion";
 const TrashSection: React.FC = () => {
   return (
-    <motion.div
+    <motion.div 
       className="p-16 bg-slate-100 dark:bg-slate-900"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}

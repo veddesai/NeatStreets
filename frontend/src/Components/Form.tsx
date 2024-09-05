@@ -1,6 +1,7 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import "../assets/utils.css";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config/config";
 import SkeletonLoader from "./SkeletonLoader";
@@ -24,6 +25,15 @@ type FormData = SignInFormData | SignUpFormData;
 
 const Form: React.FC<Props> = ({ type }) => {
   const navigate = useNavigate();
+  const authContext = useContext(AuthContext);
+
+  if (authContext === undefined) {
+    throw new Error('AuthContext must be used within an AuthProvider');
+  }
+
+  const { login } = authContext;
+
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,14 +43,13 @@ const Form: React.FC<Props> = ({ type }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     const target = e.target as typeof e.target & {
       email: { value: string };
       password: { value: string };
       username?: { value: string };
-      fullname?: { value: string };
     };
-
+  
     let formData: FormData;
     try {
       if (type === "signUp") {
@@ -49,27 +58,28 @@ const Form: React.FC<Props> = ({ type }) => {
           email: target.email.value,
           password: target.password.value,
         } as SignUpFormData;
-
+  
         await axios.post(`${API_URL}/auth/signup`, formData);
+        
+        setTimeout(() => {
+          navigate("/verify");
+        }, 1000);
       } else {
         formData = {
           email: target.email.value,
           password: target.password.value,
         } as SignInFormData;
-
-        await axios.post(`${API_URL}/auth/signin`, formData);
+  
+        await login(formData.email, formData.password); 
+        navigate("/");
       }
-
-      setTimeout(() => {
-        const route = type === "signUp" ? "/verify" : "/";
-        navigate(route);
-      }, 1000);
     } catch (err) {
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+  
 
   if (loading) {
     return <SkeletonLoader />;
