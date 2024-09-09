@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -39,12 +40,24 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
-            User user = (User) authentication.getPrincipal();
-            UserDto userDto = new UserDto(user.getId(),user.getUsername(), user.getEmail(),user.getRole(),user.getFullname());
-            System.out.println(userDto);
-            return ResponseEntity.ok(userDto);
+            User authenticatedUser = (User) authentication.getPrincipal();
+            Optional<User> userOptional = userRepository.findById(authenticatedUser.getId());
+
+            if (userOptional.isPresent() && userOptional.get().getId().equals(authenticatedUser.getId())) {
+                User user = userOptional.get();
+                UserDto userDto = new UserDto(
+                        user.getId(),
+                        user.getRealUsername(),
+                        user.getEmail(),
+                        user.getRole(),
+                        user.getFullname()
+                );
+
+                return ResponseEntity.ok(userDto);
+            }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
 
 }

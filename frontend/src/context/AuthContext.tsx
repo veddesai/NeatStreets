@@ -1,16 +1,18 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, ReactNode, useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config/config';
 
 interface User {
   username: string;
+  fullname: string;
   email: string;
+  password: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -35,10 +37,10 @@ const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (email: string, password: string) => {
     try {
-      await axios.post(`${API_URL}/auth/signin`, { username, password }, { withCredentials: true });
-      checkAuth();
+      await axios.post(`${API_URL}/auth/signin`, { email, password }, { withCredentials: true });
+      await checkAuth(); 
     } catch {
       setIsAuthenticated(false);
       setUser(null);
@@ -55,11 +57,14 @@ const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
   };
 
-  return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    user,
+    isAuthenticated,
+    login,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export { AuthProvider, AuthContext };

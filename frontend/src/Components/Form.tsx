@@ -20,7 +20,7 @@ interface SignInFormData {
   email: string;
   password: string;
 }
-
+//userDetails spring security error i have to solve
 type FormData = SignInFormData | SignUpFormData;
 
 const Form: React.FC<Props> = ({ type }) => {
@@ -28,11 +28,10 @@ const Form: React.FC<Props> = ({ type }) => {
   const authContext = useContext(AuthContext);
 
   if (authContext === undefined) {
-    throw new Error('AuthContext must be used within an AuthProvider');
+    throw new Error("AuthContext must be used within an AuthProvider");
   }
 
   const { login } = authContext;
-
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,24 +42,26 @@ const Form: React.FC<Props> = ({ type }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-  
+
     const target = e.target as typeof e.target & {
       email: { value: string };
+      fullname: { value: string };
       password: { value: string };
-      username?: { value: string };
+      username: { value: string };
     };
-  
+
     let formData: FormData;
     try {
       if (type === "signUp") {
         formData = {
-          username: target.username!.value,
+          username: target.username.value,
+          fullname: target.fullname.value,
           email: target.email.value,
           password: target.password.value,
         } as SignUpFormData;
-  
+
         await axios.post(`${API_URL}/auth/signup`, formData);
-        
+
         setTimeout(() => {
           navigate("/verify");
         }, 1000);
@@ -69,8 +70,8 @@ const Form: React.FC<Props> = ({ type }) => {
           email: target.email.value,
           password: target.password.value,
         } as SignInFormData;
-  
-        await login(formData.email, formData.password); 
+
+        await login(formData.email, formData.password);
         navigate("/");
       }
     } catch (err) {
@@ -79,7 +80,6 @@ const Form: React.FC<Props> = ({ type }) => {
       setLoading(false);
     }
   };
-  
 
   if (loading) {
     return <SkeletonLoader />;
@@ -133,6 +133,13 @@ const Form: React.FC<Props> = ({ type }) => {
             )}
             {type === "signUp" && (
               <>
+                <input
+                  type="text"
+                  className="dark:bg-slate-700 dark:text-white"
+                  name="fullname"
+                  placeholder="Fullname"
+                  required
+                />
                 <input
                   type="text"
                   className="dark:bg-slate-700 dark:text-white"
