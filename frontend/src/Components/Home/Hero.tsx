@@ -16,6 +16,7 @@ const Hero: React.FC = () => {
         <h3 className="m-auto font-[300] text-center mt-10 capitalize w-2/3 text-2xl">
           Efficiently report trash issues using Neatstreets for a cleaner
           community.
+          
         </h3>
       </div>
 
@@ -23,7 +24,7 @@ const Hero: React.FC = () => {
         {/* If i need SVGs bg-[url('/src/assets/wave.svg')] dark:bg-[url('/src/assets/dark-wave.svg')]  */}
         <img
           className={` bg-cover shadow-[rgba(50,_50,_105,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.05)_0px_1px_1px_0px] dark:shadow-[rgba(0,_0,_0,_0.15)_0px_2px_5px_0px,_rgba(0,_0,_0,_0.3)_0px_1px_1px_0px] dark:bg-transparent m-auto`}
-          src="/Hero.png"
+          src="/Hero1.png"
           alt="Loading..."
         />
       </div>

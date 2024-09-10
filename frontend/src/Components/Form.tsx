@@ -72,7 +72,7 @@ const Form: React.FC<Props> = ({ type }) => {
         } as SignInFormData;
 
         await login(formData.email, formData.password);
-        navigate("/");
+        //i was here
       }
     } catch (err) {
       setError("An error occurred. Please try again.");

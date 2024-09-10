@@ -3,6 +3,7 @@ import Hero from "../Components/Home/Hero";
 import Navbar from "../Components/Navbar";
 import HowItWorks from "../Components/Home/HowItWorks";
 import GoToMapSection from "../Components/Home/GoToMapSection";
+import { SignUpRedirect } from "../Components/Home/SignUpRedirect";
 
 
 
@@ -15,8 +16,9 @@ const Home = () => {
       <Navbar/>
       <div className=" bg-slate-50 dark:bg-slate-800 text-wrap dark:text-white">
         <Hero />
-        <HowItWorks />
+        <SignUpRedirect/>
         <GoToMapSection />
+        <HowItWorks />
         <TrashSection />
       </div>
     </>

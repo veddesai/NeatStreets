@@ -3,7 +3,7 @@ import { FaArrowTurnDown } from "react-icons/fa6";
 
 import { Link } from "react-router-dom";
 
-const GoToMapSection = () => {
+const GoToMapSection : React.FC = () => {
   return (
     <motion.div
       id="map"

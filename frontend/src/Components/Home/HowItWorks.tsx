@@ -1,6 +1,6 @@
 import { WorkFlow } from "../WorkFlow";
 import { motion } from "framer-motion";
-const HowItWorks = () => {
+const HowItWorks : React.FC = () => {
   return (
     <motion.div
       className="p-16 max-sm:p-8 bg-slate-100 max-md:gap-8 dark:bg-slate-900"
