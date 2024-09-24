@@ -1,6 +1,6 @@
 import { FormEvent, useContext, useState } from "react";
 import "../assets/utils.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config/config";
@@ -14,16 +14,20 @@ interface SignUpFormData {
   username: string;
   email: string;
   password: string;
+  role : string;
 }
 
 interface SignInFormData {
   email: string;
   password: string;
 }
-//userDetails spring security error i have to solve
+
 type FormData = SignInFormData | SignUpFormData;
 
 const Form: React.FC<Props> = ({ type }) => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const role = queryParams.get('role');
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
 
@@ -32,16 +36,18 @@ const Form: React.FC<Props> = ({ type }) => {
   }
 
   const { login } = authContext;
-
+  const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const isFlexRowReverse = type === "signUp";
 
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setMessage("");
 
     const target = e.target as typeof e.target & {
       email: { value: string };
@@ -58,21 +64,34 @@ const Form: React.FC<Props> = ({ type }) => {
           fullname: target.fullname.value,
           email: target.email.value,
           password: target.password.value,
+          role: role,
         } as SignUpFormData;
 
         await axios.post(`${API_URL}/auth/signup`, formData);
+        setMessage("Sign up successful! Redirecting to verification page...");
 
         setTimeout(() => {
           navigate("/verify");
-        }, 1000);
+        }, 2000);
       } else {
         formData = {
           email: target.email.value,
           password: target.password.value,
         } as SignInFormData;
 
-        await login(formData.email, formData.password);
-        //i was here
+        const loginSuccess: unknown = await login(
+          formData.email,
+          formData.password
+        );
+
+        if (loginSuccess) {
+          setMessage("Login successful! Redirecting to Home Page...");
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else {
+          setError("Invalid Credentials. Please try again.");
+        }
       }
     } catch (err) {
       setError("An error occurred. Please try again.");
@@ -86,7 +105,7 @@ const Form: React.FC<Props> = ({ type }) => {
   }
 
   return (
-    <div className="h-screen w-full flex flex-col fixed items-center py-20 bg-white dark:bg-slate-800">
+    <div className="h-screen w-full fixed flex flex-col items-center py-20 bg-white dark:bg-slate-800">
       <motion.div
         className={`form-container rounded-md sm:flex ${
           isFlexRowReverse ? "sm:flex-row-reverse" : "sm:flex-row"
@@ -133,6 +152,9 @@ const Form: React.FC<Props> = ({ type }) => {
             )}
             {type === "signUp" && (
               <>
+                
+                
+
                 <input
                   type="text"
                   className="dark:bg-slate-700 dark:text-white"
@@ -147,7 +169,18 @@ const Form: React.FC<Props> = ({ type }) => {
                   placeholder="Username"
                   required
                 />
-
+                {role === "HELPER" && (
+                  <>
+                    <input
+                      type="number"
+                      className="dark:bg-slate-700 dark:text-white"
+                      name="phone_number"
+                      placeholder="Contact No."
+                      required
+                    />
+                    
+                  </>
+                )}
                 <input
                   type="email"
                   className="dark:bg-slate-700 dark:text-white"
@@ -162,16 +195,10 @@ const Form: React.FC<Props> = ({ type }) => {
                   placeholder="Password"
                   required
                 />
-                <Link
-                  className="sm:hidden text-center font-semibold"
-                  to={"/signin"}
-                >
-                  Already have an account?
-                  <br />
-                  <span className="underline">Sign In!</span>
-                </Link>
               </>
             )}
+
+            {message && <p className="text-green-500 text-center">{message}</p>}
             {error && <p className="text-red-500 text-center">{error}</p>}
             <button
               className="m-auto my-4 py-2 px-6 uppercase font-bold bg-blue-600 dark:bg-yellow-500 w-fit rounded-full text-white"

@@ -104,6 +104,7 @@ const Navbar: React.FC = () => {
               ) : (
                 <AuthButton
                   type="signUp"
+                  role="END_USER"
                   className="px-4 py-2 bg-blue-600 dark:bg-yellow-500 text-white rounded-full"
                 />
               )}
