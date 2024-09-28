@@ -21,7 +21,7 @@ export const SignUpRedirect: React.FC = () => {
     >
       {isAuthenticated ? (
         <div className="text-center">
-          <h1 className="font-bold uppercase mb-20 text-blue-800 dark:text-yellow-500 text-5xl">
+          <h1 className="font-bold uppercase mb-20 text-blue-800 dark:text-yellow-500 text-5xl max-lg:text-4xl">
             Ready to Make a Difference?
           </h1>
           <h1 className="font-bold mt-10 text-4xl">
@@ -36,7 +36,7 @@ export const SignUpRedirect: React.FC = () => {
             {/* I was Here */}
           </p>
 
-          <div className="bg-blue-800 dark:bg-yellow-500 my-10 text-2xl text-white px-6 mx-auto py-2 w-max">
+          <div className="bg-blue-800 dark:bg-yellow-500 my-10 text-2xl text-white px-6 mx-auto py-2">
             <Link to={"/posts"}>
               Check others's posts or create a new report.
             </Link>

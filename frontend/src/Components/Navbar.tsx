@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
             </div>
             <ul className="p-2 flex flex-col ">
               <NavComponent icon={<FaHome />} name={"Home"} link={"/"}/>
-              <NavComponent icon={<IoIosPhotos />} name={"Posts"} link={"/posts"}/>
+              {isAuthenticated && <NavComponent icon={<IoIosPhotos />} name={"My Posts"} link={`/posts/${user?.id}`}/>}
               <NavComponent icon={<FaMapMarkedAlt />} name={"Map"} link={"/trashmap"}/>
               <NavComponent icon={<FaInfoCircle />} name={"About"} link={"/about"}/>
               <NavComponent icon={<RiContactsBook3Fill />} name={"Contact"} link={"/contact"}/>

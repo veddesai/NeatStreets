@@ -223,7 +223,7 @@ const Form: React.FC<Props> = ({ type }) => {
             To keep connected with us please{" "}
             {type === "signIn" ? "Sign up" : "Sign in"} with your personal info
           </p>
-          <Link to={type === "signIn" ? "/signup" : "/signin"}>
+          <Link to={type === "signIn" ? "/signup?role=END_USER" : "/signin"}>
             <button className="uppercase font-bold border-2 dark:border-white rounded-full w-fit mx-auto py-2 px-8">
               {type === "signIn" ? "Sign up" : "Sign in"}
             </button>

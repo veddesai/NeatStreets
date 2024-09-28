@@ -7,7 +7,7 @@ import Trashmap from "./Pages/Trashmap";
 import Verification from "./Pages/Verification";
 import Profile from "./Pages/Profile";
 import { AuthProvider } from "./context/AuthContext";
-import Posts from "./Pages/Posts";
+import MyPosts from "./Pages/MyPosts";
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
             <Route path="/trashmap" element={<Trashmap />} />
             <Route path="/verify" element={<Verification />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/posts" element={<Posts />} />
+            <Route path="/posts/:id" element={<MyPosts />} />
           </Routes>
         </AuthProvider>
       </Router>

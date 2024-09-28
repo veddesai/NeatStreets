@@ -3,6 +3,7 @@ import axios from "axios";
 import { API_URL } from "../config/config";
 
 interface User {
+  id: string;
   username: string;
   fullname: string;
   email: string;

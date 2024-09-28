@@ -43,3 +43,4 @@ public class Post {
 
     private Date completionTime;
 }
+//add a row for button which in clicking can do inserting photos,files,
