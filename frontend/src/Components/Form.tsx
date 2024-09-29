@@ -195,6 +195,14 @@ const Form: React.FC<Props> = ({ type }) => {
                   placeholder="Password"
                   required
                 />
+                <Link
+                  className="sm:hidden text-center font-semibold"
+                  to={"/signin"}
+                >
+                  Already have an account?
+                  <br />
+                  <span className="underline">Sign In!</span>
+                </Link>
               </>
             )}
 

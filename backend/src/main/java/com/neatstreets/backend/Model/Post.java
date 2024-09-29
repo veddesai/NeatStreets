@@ -1,5 +1,6 @@
 package com.neatstreets.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.neatstreets.backend.enums.PostStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,9 +37,12 @@ public class Post {
     private PostStatus status;
 
     @ManyToOne
+    @JoinColumn(name = "reported_by_id")
+    @JsonBackReference
     private User reportedBy;
 
     @ManyToOne
+    @JoinColumn(name = "assigned_to_id")  // Specifies the foreign key in Post table
     private User assignedTo;
 
     private Date completionTime;

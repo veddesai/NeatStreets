@@ -1,6 +1,8 @@
 package com.neatstreets.backend.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.neatstreets.backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,6 +34,7 @@ import java.util.UUID;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+
     private UUID id;
 
     private String username;
@@ -48,6 +51,13 @@ public class User implements UserDetails {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @OneToMany(mappedBy = "reportedBy")
+    @JsonIgnore
+    private List<Post> reportedPosts;
+
+    @OneToMany(mappedBy = "assignedTo")
+    private List<Post> assignedPosts;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

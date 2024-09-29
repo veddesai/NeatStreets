@@ -4,11 +4,31 @@ import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config/config";
 
+interface Post {
+  id: string;
+  description: string;
+  imageUrl: string;
+  location: string;
+  reportedAt: string;
+  status: "NEW" | "IN_PROGRESS" | "COMPLETED";
+  reportedBy: {
+    id: string;
+  };
+  assignedTo: string | undefined;
+  completionTime: string | null;
+}
 
+interface User {
+  id: string;
+}
 
 type PostStatus = "NEW" | "IN_PROGRESS" | "COMPLETED";
 
-const CreatePost: React.FC = () => {
+interface CreatePostProps {
+  onPostCreated: (newPost: Post) => void;
+}
+
+const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
   const authContext = useContext(AuthContext);
 
   if (authContext === undefined) {
@@ -18,15 +38,15 @@ const CreatePost: React.FC = () => {
 
   const [postContent, setPostContent] = useState({
     image: null as File | null,
-    text: "",
+    description: "",
     reportedAt: new Date(),
     status: "NEW" as PostStatus,
-    reportedBy: user?.id as string,
+    reportedBy: { id: user?.id } as User,
     completionTime: null as Date | null,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null); // Reference to file input
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   if (!isAuthenticated) {
     return null;
@@ -35,34 +55,49 @@ const CreatePost: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!postContent.text.trim() || !postContent.image) {
-      return; // Ensure both text and image are filled
+    if (!postContent.description.trim() || !postContent.image) {
+      return;
     }
 
     setIsSubmitting(true);
 
-    const formData = new FormData();
-    formData.append("text", postContent.text);
-    formData.append("image", postContent.image); // Append the actual image file
-    formData.append("status", postContent.status);
-    formData.append("reportedAt", postContent.reportedAt.toISOString());
-    formData.append("reportedBy", postContent.reportedBy);
-
     try {
-    await axios.post(`${API_URL}/posts/post`,formData);
-
-
+      //For Just Image Upload
+      const formData = new FormData();
+      formData.append("name", postContent.image!.name);
+      formData.append("file", postContent.image!);
+      const uploadResponse = await axios.post(`${API_URL}/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+      //For Post Create with Image
+      const imageUrl = uploadResponse.data.url;
+      const postData = {
+        description: postContent.description,
+        status: postContent.status,
+        reportedAt: postContent.reportedAt.toISOString(),
+        reportedBy: postContent.reportedBy,
+        imageUrl: imageUrl,
+      };
+      console.log(postData);
+      const response = await axios.post(`${API_URL}/posts/create`, postData, {
+        withCredentials: true,
+      });
+      const newPost = response.data;
+      onPostCreated(newPost);
       // Reset the form after successful submission
       setPostContent({
         ...postContent,
-        text: "",
-        image: null,
+        description: "",
         status: "NEW",
         completionTime: null,
+        image: null,
       });
 
       if (fileInputRef.current) {
-        fileInputRef.current.value = ""; // Clear the file input field
+        fileInputRef.current.value = "";
       }
     } catch (error) {
       console.error("Error submitting post:", error);
@@ -98,10 +133,10 @@ const CreatePost: React.FC = () => {
       </h1>
       <form onSubmit={handleSubmit}>
         <textarea
-          name="text"
+          name="description"
           className="w-full p-2 my-4 h-24 resize-none bg-slate-100 focus:outline-none dark:bg-slate-800 rounded-lg"
           placeholder="Did you spot unattended trash?"
-          value={postContent.text}
+          value={postContent.description}
           onChange={handleInputChange}
         />
 
@@ -121,8 +156,8 @@ const CreatePost: React.FC = () => {
           name="image"
           accept="image/*"
           className="hidden"
-          ref={fileInputRef} // Attach the ref to the file input
-          onChange={handleFileChange} // Handle file input
+          ref={fileInputRef}
+          onChange={handleFileChange}
         />
 
         <div className="flex justify-between mt-2">

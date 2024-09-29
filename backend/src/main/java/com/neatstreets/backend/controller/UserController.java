@@ -2,6 +2,7 @@ package com.neatstreets.backend.controller;
 
 
 import com.neatstreets.backend.dtos.UserDto;
+import com.neatstreets.backend.model.Post;
 import com.neatstreets.backend.model.User;
 import com.neatstreets.backend.repository.UserRepository;
 import com.neatstreets.backend.service.JwtService;
@@ -17,11 +18,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -39,5 +42,8 @@ public class UserController {
         return userService.getCurrentUser(authentication);
     }
 
-
+    @GetMapping("/{id}/posts")
+    public ResponseEntity<List<Post>> getUserPosts(@PathVariable UUID id){
+        return userService.getUserPosts(id);
+    }
 }
