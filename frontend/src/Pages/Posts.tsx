@@ -1,6 +1,5 @@
 import { IoIosCreate } from "react-icons/io";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import CreatePost from "../Components/CreatePost";
 import Navbar from "../Components/Navbar";
 import Post from "../Components/Post";
@@ -33,15 +32,15 @@ interface Post {
   completionTime: string | null;
 }
 
-const MyPosts: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+const Posts: React.FC = () => {
+ 
   const [posts, setPosts] = useState<Array<Post>>([]);
   const [showCreatePost, setShowCreatePost] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`${API_URL}/user/${id}/posts`, {
+        const response = await axios.get(`${API_URL}/posts`, {
           withCredentials: true,
         });
         setPosts(response.data);
@@ -51,7 +50,7 @@ const MyPosts: React.FC = () => {
     };
 
     fetchPosts();
-  }, [id]);
+  }, []);
 
   const handleCreatePostToggle = () => {
     setShowCreatePost((prev) => !prev);
@@ -68,24 +67,9 @@ const MyPosts: React.FC = () => {
       <div className="p-4">
         <div className="flex justify-around items-center my-6 lg:mx-28">
           <h1 className="text-2xl font-bold uppercase">
-            {posts[0]?.reportedBy.username
-              ? posts[0].reportedBy.username + "'s"
-              : "My"}{" "}
-            Reports
+            Reports Near You
           </h1>
-          {/* Ved Was Here, Now i need to do reportedBy changes to real user name, somewhat ui changes like profile pic typa thing near reportedBy.. Location API to be inserted so can get based on Co ordinates and set it for user and posts... In Backend, need to getPostsByLocation. Then, We can click on marker on Map on our location to fetch those posts.
           
-          ROLE BASED 💈🧮 : 
-          
-          (Helper) : (1) Can edit Post Status for which its assigned to,(2) Can't Create Posts,(3 {optional}) Gets Notified about Trash Posts based on location, (4) Gets Gamified or Displayed on Leaderboard based on points they get for completing a collection of trash.
-          
-          (End_User) 🏄  : (1) can delete his/her own posts , We have MyPosts.tsx! (2) Sees and can create Trash Posts.
-
-          PROFILE 🙇 🧮 : 
-
-          Making a Profile after clicking that photoTypaStuff, Verification after signup with mail?, Logout in that profile.
-
-          */}
           <button
             onClick={handleCreatePostToggle}
             className="text-2xl flex items-center bg-blue-700 dark:bg-yellow-500 outline-none text-white p-2 rounded-lg"
@@ -140,4 +124,4 @@ const MyPosts: React.FC = () => {
   );
 };
 
-export default MyPosts;
+export default Posts;

@@ -8,8 +8,19 @@ interface User {
   fullname: string;
   email: string;
   password: string;
+  reportedPosts: Post[];
 }
-
+interface Post {
+  id: string;
+  description: string;
+  imageUrl: string;
+  location: string;
+  reportedAt: string;
+  status: "NEW" | "IN_PROGRESS" | "COMPLETED";
+  reportedBy: User;
+  assignedTo: User | undefined;
+  completionTime: string | null;
+}
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;

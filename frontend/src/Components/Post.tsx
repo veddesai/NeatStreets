@@ -1,21 +1,32 @@
 import React, { useState } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { IoPersonCircle } from "react-icons/io5";
+
 import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
 
+enum Role {
+  END_USER = "END_USER",
+  ADMIN = "ADMIN",
+  HELPER = "HELPER",
+}
+
 interface User {
-  id: string | undefined;
+  id: string;
+  username: string;
+  email: string;
+  role: Role;
+  fullname: string;
 }
 
 interface PostProps {
+  id: string;
   description: string;
   imageUrl: string;
   location: string;
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;
-  assignedTo?: string;
-  completionTime?: string | null;
+  assignedTo: User | undefined;
+  completionTime: string | null;
   editable: boolean;
 }
 
@@ -28,11 +39,10 @@ const Post: React.FC<PostProps> = ({
   reportedBy,
   assignedTo,
   completionTime,
+  editable,
 }) => {
-  
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  
   const openImageModal = () => {
     setIsModalOpen(true);
   };
@@ -43,19 +53,18 @@ const Post: React.FC<PostProps> = ({
 
   return (
     <div className="max-w-3xl mx-auto my-4 p-6 bg-white dark:bg-slate-700 rounded-lg shadow-lg">
-    
       <img
         src={imageUrl}
         alt="Trash Reported"
         className="w-full h-60 object-cover rounded-md mb-4 cursor-pointer"
-        onClick={openImageModal} 
+        onClick={openImageModal}
       />
 
       {/* Image Modal */}
       {isModalOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
-          onClick={closeModal} 
+          onClick={closeModal}
         >
           <div
             className="relative p-4 bg-white dark:bg-slate-800 rounded-md shadow-lg"
@@ -78,16 +87,19 @@ const Post: React.FC<PostProps> = ({
       )}
 
       {/* Post Description */}
-      <p className="text-xl font-semibold mb-2 dark:text-white">{description}</p>
+      <p className="text-xl font-semibold mb-2 dark:text-white">
+        {description}
+      </p>
 
       {/* Location */}
-      <div className="flex items-center text-gray-600 dark:text-gray-300 mb-2">
+      <div className="flex items-center text-gray-600 dark:text-gray-300 mt-4">
         <FaMapMarkerAlt className="mr-2" />
         <span>{location}</span>
       </div>
 
       {/* Post Status */}
-      <div className="mb-4">
+
+      <div className="my-4">
         <span
           className={`inline-block px-3 py-1 text-sm font-semibold cursor-pointer rounded-lg ${
             status === "COMPLETED"
@@ -96,23 +108,32 @@ const Post: React.FC<PostProps> = ({
               ? "bg-yellow-100 text-yellow-600"
               : "bg-red-100 text-red-600"
           }`}
-          
         >
-          {status === "COMPLETED" ? "Completed" : status === "IN_PROGRESS" ? "In Progress" : "New"}
+          {status === "COMPLETED"
+            ? "Completed"
+            : status === "IN_PROGRESS"
+            ? "In Progress"
+            : "New"}
         </span>
       </div>
 
       {/* Post Reporter */}
       <div className="flex items-center mb-2">
-        <IoPersonCircle className="mr-2 text-2xl text-gray-500 dark:text-gray-300" />
-        <span className="text-gray-700 dark:text-gray-300">Reported by: {reportedBy.id}</span>
+        <div className="mr-2 text-2xl border-2 w-10 h-10 border-slate-600 dark:border-white bg-blue-600 text-center dark:bg-yellow-500 text-white rounded-full">
+          {reportedBy?.username?.charAt(0)}
+        </div>
+        <span className="text-gray-700 dark:text-gray-300">
+          Reported by: <span className=" text-blue-600 dark:text-yellow-500">{reportedBy.fullname}</span>
+        </span>
       </div>
 
       {/* Assigned To */}
       {assignedTo && (
         <div className="flex items-center mb-2">
           <MdOutlineAssignmentTurnedIn className="mr-2 text-2xl text-gray-500 dark:text-gray-300" />
-          <span className="text-gray-700 dark:text-gray-300">Assigned to: {assignedTo}</span>
+          <span className="text-gray-700 dark:text-gray-300">
+            Assigned to: {assignedTo.fullname}
+          </span>
         </div>
       )}
 

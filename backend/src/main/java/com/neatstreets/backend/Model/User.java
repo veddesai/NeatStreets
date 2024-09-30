@@ -53,10 +53,11 @@ public class User implements UserDetails {
     private Date updatedAt;
 
     @OneToMany(mappedBy = "reportedBy")
-    @JsonIgnore
+    @JsonManagedReference
     private List<Post> reportedPosts;
 
     @OneToMany(mappedBy = "assignedTo")
+    @JsonManagedReference
     private List<Post> assignedPosts;
 
     @Override

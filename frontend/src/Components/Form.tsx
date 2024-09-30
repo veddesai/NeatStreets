@@ -105,7 +105,7 @@ const Form: React.FC<Props> = ({ type }) => {
   }
 
   return (
-    <div className="h-screen w-full fixed flex flex-col items-center py-20 bg-white dark:bg-slate-800">
+    <div className="h-screen w-full lg:fixed flex flex-col items-center py-20 bg-white dark:bg-slate-800">
       <motion.div
         className={`form-container rounded-md sm:flex ${
           isFlexRowReverse ? "sm:flex-row-reverse" : "sm:flex-row"

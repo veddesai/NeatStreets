@@ -12,6 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
-    Optional<List<Post>> findByLocation(String location);
+    Optional<List<Post>> findByLocationOrderByReportedAtDesc(String location);
     Optional<List<Post>> findPostsByReportedByOrderByReportedAtDesc(User reportedBy);
 }

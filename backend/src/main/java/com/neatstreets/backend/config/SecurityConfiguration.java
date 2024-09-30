@@ -49,7 +49,7 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173","http://192.168.29.56:5173"));
         configuration.addAllowedMethod("*");
         configuration.setAllowedHeaders(List.of("X-Requested-With", "Origin", "Content-Type", "Accept",
                  "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods",
@@ -60,7 +60,6 @@ public class SecurityConfiguration {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        System.out.println(source.getCorsConfigurations());
         return source;
     }
 }

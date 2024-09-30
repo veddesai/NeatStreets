@@ -61,7 +61,7 @@ public class AuthService {
         String jwtToken = jwtService.generateToken(authenticatedUser);
         Cookie cookie = new Cookie("JWT", jwtToken);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+//        cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setMaxAge((int) (jwtService.getExpirationTime() / 1000));
         response.addCookie(cookie);
@@ -72,7 +72,7 @@ public class AuthService {
     public ResponseEntity<?> logout(HttpServletResponse response){
         Cookie cookie = new Cookie("JWT", null);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+//        cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);

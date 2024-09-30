@@ -11,15 +11,23 @@ interface Post {
   location: string;
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
-  reportedBy: {
-    id: string;
-  };
-  assignedTo: string | undefined;
+  reportedBy: User;
+  assignedTo: User | undefined;
   completionTime: string | null;
+}
+
+enum Role {
+  END_USER = "END_USER",
+  ADMIN = "ADMIN",
+  HELPER = "HELPER",
 }
 
 interface User {
   id: string;
+  username: string;
+  email: string;
+  role: Role;
+  fullname: string;
 }
 
 type PostStatus = "NEW" | "IN_PROGRESS" | "COMPLETED";
@@ -34,6 +42,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
   if (authContext === undefined) {
     throw new Error("AuthContext must be used within an AuthProvider");
   }
+  
   const { user, isAuthenticated } = authContext;
 
   const [postContent, setPostContent] = useState({
@@ -41,7 +50,13 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
     description: "",
     reportedAt: new Date(),
     status: "NEW" as PostStatus,
-    reportedBy: { id: user?.id } as User,
+    reportedBy: {
+      id: user?.id || "",  
+      email: user?.email || "",
+      fullname: user?.fullname || "Unknown User", 
+      username: user?.username || "",
+      role: Role.END_USER,
+    } as User,
     completionTime: null as Date | null,
   });
 
@@ -62,17 +77,19 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
     setIsSubmitting(true);
 
     try {
-      //For Just Image Upload
       const formData = new FormData();
       formData.append("name", postContent.image!.name);
       formData.append("file", postContent.image!);
+      
+      // For Just Image Upload
       const uploadResponse = await axios.post(`${API_URL}/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       });
-      //For Post Create with Image
+
+      // For Post Create with Image
       const imageUrl = uploadResponse.data.url;
       const postData = {
         description: postContent.description,
@@ -81,20 +98,29 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
         reportedBy: postContent.reportedBy,
         imageUrl: imageUrl,
       };
-      console.log(postData);
+      
+
       const response = await axios.post(`${API_URL}/posts/create`, postData, {
         withCredentials: true,
       });
       const newPost = response.data;
       onPostCreated(newPost);
+
       // Reset the form after successful submission
-      setPostContent({
-        ...postContent,
+      setPostContent((prevContent) => ({
+        ...prevContent,
         description: "",
         status: "NEW",
         completionTime: null,
         image: null,
-      });
+        reportedBy: {
+          id: user?.id || "",
+          email: user?.email || "",
+          fullname: user?.fullname || "Unknown User",
+          username: user?.username || "",
+          role: Role.END_USER,
+        }, // Reset reportedBy
+      }));
 
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -129,7 +155,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
   return (
     <div className="mx-auto my-4 w-full max-w-2xl max-lg:max-w-lg p-4 bg-white dark:bg-slate-700 text-black dark:text-white rounded-lg shadow-md">
       <h1 className="text-center my-4 text-4xl font-bold uppercase">
-        Create Post
+        Create Trash Report
       </h1>
       <form onSubmit={handleSubmit}>
         <textarea
@@ -143,9 +169,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
         <label htmlFor="post-input" className="cursor-pointer">
           <div className="p-3 my-4 flex justify-center items-center w-full bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-10 border border-gray-100">
             <h5 className="text-center">
-              {postContent.image?.name
-                ? postContent.image?.name
-                : "UPLOAD IMAGE"}
+              {postContent.image?.name || "UPLOAD IMAGE"}
             </h5>
             <IoImagesOutline className="ml-2 text-2xl" />
           </div>

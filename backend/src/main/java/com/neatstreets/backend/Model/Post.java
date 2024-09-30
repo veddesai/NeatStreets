@@ -42,7 +42,8 @@ public class Post {
     private User reportedBy;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_to_id")  // Specifies the foreign key in Post table
+    @JoinColumn(name = "assigned_to_id")
+    @JsonBackReference// Specifies the foreign key in Post table
     private User assignedTo;
 
     private Date completionTime;

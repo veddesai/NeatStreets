@@ -31,12 +31,12 @@ export const SignUpRedirect: React.FC = () => {
             </span>
           </h1>
           <p className="my-20 text-xl">
-            You have 1{/* {user?.reports.length}  */}
+            You have {user?.reportedPosts.length} 
             &nbsp;reports in progress.
             {/* I was Here */}
           </p>
 
-          <div className="bg-blue-800 dark:bg-yellow-500 my-10 text-2xl text-white px-6 mx-auto py-2">
+          <div className="bg-blue-800 dark:bg-yellow-500 my-10 max-lg:mx-8 lg:mx-96 text-2xl text-white px-6 py-2">
             <Link to={"/posts"}>
               Check others's posts or create a new report.
             </Link>
@@ -44,7 +44,7 @@ export const SignUpRedirect: React.FC = () => {
         </div>
       ) : (
         <div>
-          <h1 className="font-bold text-blue-800 uppercase dark:text-yellow-500 text-center text-5xl max-lg:text-4xl">
+          <h1 className="font-bold text-blue-800 max-lg:mb-8 uppercase dark:text-yellow-500 text-center text-5xl max-lg:text-4xl">
             SIGNUP ON NEATSTREETS AS A :
           </h1>
           <div className="flex max-md:flex-col md:p-12 justify-between gap-8">

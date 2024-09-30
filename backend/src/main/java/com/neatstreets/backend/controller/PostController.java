@@ -1,10 +1,7 @@
 package com.neatstreets.backend.controller;
 
 import com.neatstreets.backend.dtos.PostDto;
-
-import com.neatstreets.backend.service.ImageService;
 import com.neatstreets.backend.service.PostService;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +13,11 @@ public class PostController {
 
     public PostController(  PostService postService){
         this.postService = postService;
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getPostsByLocation(String location){
+        return postService.getPostsByLocation(location);
     }
 
     @PostMapping("/create")
