@@ -4,21 +4,23 @@ import com.neatstreets.backend.enums.Role;
 import com.neatstreets.backend.model.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPostsDto {
+public class EndUserDto extends UserDto{
 
-    private UUID id;
-    private String username;
-    private String email;
-    private Role role;
-    private String fullname;
     private List<Post> reportedPosts;
+
+    public EndUserDto(UUID id, String realUsername, String email, Role role, String fullname, List<Post> reportedPosts) {
+        super(id, realUsername, email, role, fullname);
+        this.reportedPosts = reportedPosts;
+    }
 }
