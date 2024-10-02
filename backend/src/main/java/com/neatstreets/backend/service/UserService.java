@@ -1,9 +1,8 @@
 package com.neatstreets.backend.service;
 
 
-import com.neatstreets.backend.dtos.PostDto;
-import com.neatstreets.backend.dtos.UserDto;
-import com.neatstreets.backend.dtos.UserPostsDto;
+import com.neatstreets.backend.dtos.*;
+import com.neatstreets.backend.enums.Role;
 import com.neatstreets.backend.model.Post;
 import com.neatstreets.backend.model.User;
 import com.neatstreets.backend.repository.PostRepository;
@@ -31,23 +30,47 @@ public class UserService {
         this.postRepository = postRepository;
     }
 
-    public ResponseEntity<UserPostsDto> getCurrentUser(Authentication authentication){
+    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication){
         if (authentication != null && authentication.isAuthenticated()) {
             User authenticatedUser = (User) authentication.getPrincipal();
             Optional<User> userOptional = userRepository.findById(authenticatedUser.getId());
 
             if (userOptional.isPresent() && userOptional.get().getId().equals(authenticatedUser.getId())) {
                 User user = userOptional.get();
-                UserPostsDto userDto = new UserPostsDto(
-                        user.getId(),
-                        user.getRealUsername(),
-                        user.getEmail(),
-                        user.getRole(),
-                        user.getFullname(),
-                        user.getReportedPosts()
-                );
+                if(user.getRole().equals(Role.END_USER)){
+                    EndUserDto userDto = new EndUserDto(
+                            user.getId(),
+                            user.getRealUsername(),
+                            user.getEmail(),
+                            user.getRole(),
+                            user.getFullname(),
+                            user.getReportedPosts()
+                    );
+                    return ResponseEntity.ok(userDto);
+                } else if (user.getRole().equals(Role.HELPER)) {
+                    HelperDto userDto = new HelperDto(
+                            user.getId(),
+                            user.getRealUsername(),
+                            user.getEmail(),
+                            user.getRole(),
+                            user.getFullname(),
+                            user.getAssignedPosts()
+                    );
+                    return ResponseEntity.ok(userDto);
+                }
+                else{
+                    AdminDto userDto = new AdminDto(
+                            user.getId(),
+                            user.getRealUsername(),
+                            user.getEmail(),
+                            user.getRole(),
+                            user.getFullname(),
+                            user.getReportedPosts(),
+                            user.getAssignedPosts()
+                    );
+                    return ResponseEntity.ok(userDto);
+                }
 
-                return ResponseEntity.ok(userDto);
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

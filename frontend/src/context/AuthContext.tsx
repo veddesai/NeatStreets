@@ -2,13 +2,21 @@ import React, { createContext, ReactNode, useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "../config/config";
 
+enum Role {
+  END_USER = "END_USER",
+  ADMIN = "ADMIN",
+  HELPER = "HELPER",
+}
+
 interface User {
   id: string;
   username: string;
   fullname: string;
   email: string;
+  role: Role;
   password: string;
   reportedPosts: Post[];
+  assignedPosts: Post[];
 }
 interface Post {
   id: string;
