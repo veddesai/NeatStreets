@@ -43,9 +43,8 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "assigned_to_id")
-    @JsonBackReference// Specifies the foreign key in Post table
+    @JsonBackReference
     private User assignedTo;
 
     private Date completionTime;
 }
-//add a row for button which in clicking can do inserting photos,files,

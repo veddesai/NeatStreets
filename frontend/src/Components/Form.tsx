@@ -10,11 +10,17 @@ interface Props {
   type: "signIn" | "signUp";
 }
 
+enum Role {
+  END_USER = "END_USER",
+  ADMIN = "ADMIN",
+  HELPER = "HELPER",
+}
+
 interface SignUpFormData {
   username: string;
   email: string;
   password: string;
-  role : string;
+  role: Role;
 }
 
 interface SignInFormData {
@@ -27,7 +33,7 @@ type FormData = SignInFormData | SignUpFormData;
 const Form: React.FC<Props> = ({ type }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const role = queryParams.get('role');
+  const role = queryParams.get("role");
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
 
@@ -41,7 +47,6 @@ const Form: React.FC<Props> = ({ type }) => {
   const [error, setError] = useState<string | null>(null);
 
   const isFlexRowReverse = type === "signUp";
-
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -152,9 +157,6 @@ const Form: React.FC<Props> = ({ type }) => {
             )}
             {type === "signUp" && (
               <>
-                
-                
-
                 <input
                   type="text"
                   className="dark:bg-slate-700 dark:text-white"
@@ -169,18 +171,7 @@ const Form: React.FC<Props> = ({ type }) => {
                   placeholder="Username"
                   required
                 />
-                {role === "HELPER" && (
-                  <>
-                    <input
-                      type="number"
-                      className="dark:bg-slate-700 dark:text-white"
-                      name="phone_number"
-                      placeholder="Contact No."
-                      required
-                    />
-                    
-                  </>
-                )}
+
                 <input
                   type="email"
                   className="dark:bg-slate-700 dark:text-white"
@@ -195,6 +186,9 @@ const Form: React.FC<Props> = ({ type }) => {
                   placeholder="Password"
                   required
                 />
+
+                <div className="text-blue-600 dark:text-yellow-400 underline">Registering... as a {role}</div>
+
                 <Link
                   className="sm:hidden text-center font-semibold"
                   to={"/signin"}

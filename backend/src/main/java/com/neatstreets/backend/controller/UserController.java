@@ -1,8 +1,8 @@
 package com.neatstreets.backend.controller;
 
+import com.neatstreets.backend.dtos.EndUserDto;
 import com.neatstreets.backend.dtos.PostDto;
 import com.neatstreets.backend.dtos.UserDto;
-import com.neatstreets.backend.dtos.UserPostsDto;
 import com.neatstreets.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<UserPostsDto> getCurrentUser(Authentication authentication) {
+    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
         return userService.getCurrentUser(authentication);
     }
 
