@@ -1,5 +1,6 @@
 package com.neatstreets.backend.controller;
 
+import com.neatstreets.backend.dtos.EndUserDto;
 import com.neatstreets.backend.dtos.PostDto;
 import com.neatstreets.backend.dtos.UserDto;
 import com.neatstreets.backend.service.UserService;
