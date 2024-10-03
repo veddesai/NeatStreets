@@ -9,22 +9,25 @@ import Profile from "./Pages/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import MyPosts from "./Pages/MyPosts";
 import Posts from "./Pages/Posts";
+import { LocationProvider } from "./context/LocationContext";
 
 function App() {
   return (
     <>
       <Router>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<Signin />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/trashmap" element={<Trashmap />} />
-            <Route path="/verify" element={<Verification />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/posts" element={<Posts/>}/>
-            <Route path="/posts/:id" element={<MyPosts />} />
-          </Routes>
+          <LocationProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signin" element={<Signin />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/trashmap" element={<Trashmap />} />
+              <Route path="/verify" element={<Verification />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/posts" element={<Posts />} />
+              <Route path="/posts/:id" element={<MyPosts />} />
+            </Routes>
+          </LocationProvider>
         </AuthProvider>
       </Router>
     </>

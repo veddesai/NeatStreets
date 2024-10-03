@@ -3,6 +3,7 @@ import { IoImagesOutline } from "react-icons/io5";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config/config";
+import { useLocation } from "../context/LocationContext";
 
 interface Post {
   id: string;
@@ -12,8 +13,8 @@ interface Post {
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;
-  assignedTo: User | undefined;
-  completionTime: string | null;
+  assignedTo?: User;
+  completionTime?: string;
 }
 
 enum Role {
@@ -38,7 +39,7 @@ interface CreatePostProps {
 
 const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
   const authContext = useContext(AuthContext);
-
+  const {location} = useLocation();
   if (authContext === undefined) {
     throw new Error("AuthContext must be used within an AuthProvider");
   }
@@ -50,6 +51,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
     description: "",
     reportedAt: new Date(),
     status: "NEW" as PostStatus,
+    location: location.address as string,
     reportedBy: {
       id: user?.id || "",  
       email: user?.email || "",
@@ -97,6 +99,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
         reportedAt: postContent.reportedAt.toISOString(),
         reportedBy: postContent.reportedBy,
         imageUrl: imageUrl,
+        location: postContent.location
       };
       
 

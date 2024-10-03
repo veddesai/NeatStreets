@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { FaMapMarkerAlt } from "react-icons/fa";
-
 import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
+import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
+import { API_URL } from "../config/config";
+import { motion } from "framer-motion";
 
 enum Role {
   END_USER = "END_USER",
@@ -25,12 +28,12 @@ interface PostProps {
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;
-  assignedTo: User | undefined;
-  completionTime: string | null;
-  editable: boolean;
+  assignedTo?: User;
+  completionTime?: string;
 }
 
 const Post: React.FC<PostProps> = ({
+  id,
   description,
   imageUrl,
   location,
@@ -39,8 +42,64 @@ const Post: React.FC<PostProps> = ({
   reportedBy,
   assignedTo,
   completionTime,
-  editable,
 }) => {
+  const authContext = useContext(AuthContext);
+  if (authContext === undefined) {
+    throw new Error("AuthContext must be used within an AuthProvider");
+  }
+  const { user } = authContext;
+
+  const [postStatus, setPostStatus] = useState<
+    "NEW" | "IN_PROGRESS" | "COMPLETED"
+  >(status);
+  const [completionTimeState, setCompletionTimeState] = useState<
+    string | undefined
+  >(completionTime);
+  const [postAssignedTo, setPostAssignedTo] = useState<User | undefined>(
+    assignedTo
+  );
+
+  const handleAssignToMe = async () => {
+    if (!user) {
+      console.error("User is not authenticated.");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `${API_URL}/posts/${id}/assign`,
+        {
+          assignedTo: { id: user.id },
+          status: "IN_PROGRESS",
+        },
+        { withCredentials: true }
+      );
+      setPostStatus("IN_PROGRESS");
+      setPostAssignedTo(user);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error assigning to helper:", error);
+    }
+  };
+
+  const handleMarkAsCompleted = async () => {
+    try {
+      const response = await axios.put(
+        `${API_URL}/posts/${id}/complete`,
+        {
+          status: "COMPLETED",
+          completionTime: new Date().toISOString(),
+        },
+        { withCredentials: true }
+      );
+      setPostStatus("COMPLETED");
+      setCompletionTimeState(new Date().toISOString());
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error marking post as completed:", error);
+    }
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openImageModal = () => {
@@ -52,7 +111,12 @@ const Post: React.FC<PostProps> = ({
   };
 
   return (
-    <div className="max-w-3xl mx-auto my-4 p-6 bg-white dark:bg-slate-700 rounded-lg shadow-lg">
+    <motion.div
+      className="max-w-3xl mx-auto my-4 p-6 bg-white dark:bg-slate-700 rounded-lg shadow-lg"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <img
         src={imageUrl}
         alt="Trash Reported"
@@ -98,20 +162,19 @@ const Post: React.FC<PostProps> = ({
       </div>
 
       {/* Post Status */}
-
       <div className="my-4">
         <span
           className={`inline-block px-3 py-1 text-sm font-semibold cursor-pointer rounded-lg ${
-            status === "COMPLETED"
+            postStatus === "COMPLETED"
               ? "bg-green-100 text-green-600"
-              : status === "IN_PROGRESS"
+              : postStatus === "IN_PROGRESS"
               ? "bg-yellow-100 text-yellow-600"
               : "bg-red-100 text-red-600"
           }`}
         >
-          {status === "COMPLETED"
+          {postStatus === "COMPLETED"
             ? "Completed"
-            : status === "IN_PROGRESS"
+            : postStatus === "IN_PROGRESS"
             ? "In Progress"
             : "New"}
         </span>
@@ -123,16 +186,20 @@ const Post: React.FC<PostProps> = ({
           {reportedBy?.username?.charAt(0)}
         </div>
         <span className="text-gray-700 dark:text-gray-300">
-          Reported by: <span className=" text-blue-600 dark:text-yellow-500">{reportedBy.fullname}</span>
+          Reported by:{" "}
+          <span className="text-blue-600 dark:text-yellow-500">
+            {reportedBy.fullname}
+          </span>
         </span>
       </div>
 
       {/* Assigned To */}
-      {assignedTo && (
+      {postAssignedTo && (
         <div className="flex items-center mb-2">
           <MdOutlineAssignmentTurnedIn className="mr-2 text-2xl text-gray-500 dark:text-gray-300" />
           <span className="text-gray-700 dark:text-gray-300">
-            Assigned to: {assignedTo.fullname}
+            Assigned to:{" "}
+            <span className="font-extrabold">{postAssignedTo.fullname}</span>
           </span>
         </div>
       )}
@@ -143,12 +210,34 @@ const Post: React.FC<PostProps> = ({
       </div>
 
       {/* Completion Time */}
-      {completionTime && (
+      {completionTimeState && (
         <div className="text-sm text-gray-500 dark:text-gray-400">
-          Completed on: {new Date(completionTime).toLocaleDateString()}
+          Completed on: {new Date(completionTimeState).toLocaleString()}
         </div>
       )}
-    </div>
+
+      {/* Assign to me (only if the user is a HELPER and the post is new) */}
+      {user?.role === Role.HELPER && postStatus === "NEW" && (
+        <button
+          className="mt-4 px-4 py-2 bg-blue-700 hover:bg-blue-800 dark:bg-yellow-500 text-white font-semibold rounded-lg shadow-md dark:hover:bg-yellow-600"
+          onClick={handleAssignToMe}
+        >
+          Assign to me
+        </button>
+      )}
+
+      {/* Mark as Completed (only if the post is assigned to the current user and in progress) */}
+      {user?.role === Role.HELPER &&
+        postStatus === "IN_PROGRESS" &&
+        postAssignedTo?.id === user.id && (
+          <button
+            className="mt-4 px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600"
+            onClick={handleMarkAsCompleted}
+          >
+            Mark as Completed
+          </button>
+        )}
+    </motion.div>
   );
 };
 

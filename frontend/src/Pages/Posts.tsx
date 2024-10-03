@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { IoIosCreate } from "react-icons/io";
 import { useEffect, useState } from "react";
 import CreatePost from "../Components/CreatePost";
@@ -5,6 +6,7 @@ import Navbar from "../Components/Navbar";
 import Post from "../Components/Post";
 import axios from "axios";
 import { API_URL } from "../config/config";
+import { useLocation } from "../context/LocationContext";
 
 enum Role {
   END_USER = "END_USER",
@@ -28,29 +30,29 @@ interface Post {
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;
-  assignedTo: User | undefined;
-  completionTime: string | null;
+  assignedTo?: User;
+  completionTime?: string;
 }
 
 const Posts: React.FC = () => {
- 
   const [posts, setPosts] = useState<Array<Post>>([]);
   const [showCreatePost, setShowCreatePost] = useState(false);
+  const { location } = useLocation();
+
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/posts/${location.address}`, {
+        withCredentials: true,
+      });
+      setPosts(response.data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/posts`, {
-          withCredentials: true,
-        });
-        setPosts(response.data);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-
-    fetchPosts();
-  }, []);
+    fetchPosts(); // Initial fetch
+  }, [location.address]); // Dependency on location.address
 
   const handleCreatePostToggle = () => {
     setShowCreatePost((prev) => !prev);
@@ -66,10 +68,8 @@ const Posts: React.FC = () => {
       <Navbar />
       <div className="p-4">
         <div className="flex justify-around items-center my-6 lg:mx-28">
-          <h1 className="text-2xl font-bold uppercase">
-            Reports Near You
-          </h1>
-          
+          <h1 className="text-2xl font-bold uppercase">Reports Near You</h1>
+
           <button
             onClick={handleCreatePostToggle}
             className="text-2xl flex items-center bg-blue-700 dark:bg-yellow-500 outline-none text-white p-2 rounded-lg"
@@ -115,7 +115,6 @@ const Posts: React.FC = () => {
               reportedBy={post.reportedBy}
               assignedTo={post.assignedTo}
               completionTime={post.completionTime}
-              editable={true}
             />
           ))}
         </div>

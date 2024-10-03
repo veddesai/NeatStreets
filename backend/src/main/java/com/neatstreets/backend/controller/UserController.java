@@ -1,6 +1,5 @@
 package com.neatstreets.backend.controller;
 
-import com.neatstreets.backend.dtos.EndUserDto;
 import com.neatstreets.backend.dtos.PostDto;
 import com.neatstreets.backend.dtos.UserDto;
 import com.neatstreets.backend.service.UserService;
@@ -35,4 +34,5 @@ public class UserController {
     public ResponseEntity<List<PostDto>> getUserPosts(@PathVariable UUID id){
         return userService.getUserPosts(id);
     }
+
 }

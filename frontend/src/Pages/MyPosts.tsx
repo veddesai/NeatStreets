@@ -29,8 +29,8 @@ interface Post {
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;
-  assignedTo: User | undefined;
-  completionTime: string | null;
+  assignedTo?: User;
+  completionTime?: string;
 }
 
 const MyPosts: React.FC = () => {
@@ -77,13 +77,14 @@ const MyPosts: React.FC = () => {
           
           ROLE BASED 💈🧮 : 
           
-          (Helper) : (1) Can edit Post Status for which its assigned to,(2) Can't Create Posts,(3 {optional}) Gets Notified about Trash Posts based on location, (4) Gets Gamified or Displayed on Leaderboard based on points they get for completing a collection of trash.
+          (Helper) : (1 🏸 ) Can edit Post Status for which its assigned to,(2 (will do tmrw..here i am)) Can't Create Posts,(3 {optional}) Gets Notified about Trash Posts based on location, (4) Gets Gamified or Displayed on Leaderboard based on points they get for completing a collection of trash.
           
           (End_User) 🏄  : (1) can delete his/her own posts , We have MyPosts.tsx! (2) Sees and can create Trash Posts.
 
           PROFILE 🙇 🧮 : 
 
           Making a Profile after clicking that photoTypaStuff, Verification after signup with mail?, Logout in that profile.
+
 
           */}
           <button
@@ -131,7 +132,6 @@ const MyPosts: React.FC = () => {
               reportedBy={post.reportedBy}
               assignedTo={post.assignedTo}
               completionTime={post.completionTime}
-              editable={true}
             />
           ))}
         </div>

@@ -2,6 +2,6 @@ package com.neatstreets.backend.enums;
 
 public enum PostStatus {
     NEW,
-    CLAIMED,
+    IN_PROGRESS,
     COMPLETED
 }
