@@ -1,6 +1,7 @@
 import React, { createContext, ReactNode, useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "../config/config";
+import { useNavigate } from "react-router-dom";
 
 enum Role {
   END_USER = "END_USER",
@@ -26,8 +27,8 @@ interface Post {
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;
-  assignedTo: User | undefined;
-  completionTime: string | null;
+  assignedTo?: User;
+  completionTime?: string;
 }
 interface AuthContextType {
   user: User | null;
@@ -41,7 +42,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   const checkAuth = async () => {
     try {
       const response = await axios.get(`${API_URL}/user/profile`, {
@@ -87,6 +88,7 @@ const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
       setUser(null);
       setIsAuthenticated(false);
+      navigate("/")
     } catch {
       // Handle logout failure if needed
     }

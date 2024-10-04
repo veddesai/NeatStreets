@@ -43,77 +43,88 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
   const updateLocation = (lat: number, lng: number, address: string) => {
     const newLocation = { lat, lng, address };
     setLocation(newLocation);
-    sessionStorage.setItem("location", JSON.stringify(newLocation)); // Save to session storage
+    sessionStorage.setItem("location", JSON.stringify(newLocation)); 
   };
 
-    useEffect(() => {
-      if (!location.lat || !location.lng) {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const { latitude, longitude } = position.coords;
-              fetchAddress(latitude, longitude).then((address) => {
-                updateLocation(latitude, longitude, address);
-              });
-            },
-            (error) => console.error('Error fetching location:', error),
-            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-          );
-        }
+  const isLocationChanged = (
+    newLat: number | null,
+    newLng: number | null
+  ): boolean => {
+    return (
+      newLat !== location.lat || newLng !== location.lng
+    );
+  };
+
+  useEffect(() => {
+    
+    if (!location.lat || !location.lng) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            fetchAddress(latitude, longitude).then((address) => {
+              updateLocation(latitude, longitude, address);
+            });
+          },
+          (error) => console.error("Error fetching location:", error),
+          { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        );
       }
-    }, [location.lat, location.lng]);
+    } else {
+    
+      const watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          if (isLocationChanged(latitude, longitude)) {
+            fetchAddress(latitude, longitude).then((address) => {
+              updateLocation(latitude, longitude, address);
+            });
+          }
+        },
+        (error) => console.error("Error watching location:", error),
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
 
-//TEST CASE FOR LOCATION :
-//   useEffect(() => {
-//     if (!location.lat || !location.lng) {
-//       const testLatitude = 40.7128;
-//       const testLongitude = -74.006;
-//       fetchAddress(testLatitude, testLongitude).then((address) => {
-//         updateLocation(testLatitude, testLongitude, address);
-//       });
-//     }
-//   }, [location.lat, location.lng]);
+      
+      return () => navigator.geolocation.clearWatch(watchId);
+    }
+  }, [location.lat, location.lng]);
 
-const fetchAddress = async (lat: number, lng: number): Promise<string> => {
+  const fetchAddress = async (lat: number, lng: number): Promise<string> => {
     try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      );
       const data = await response.json();
-  
+
       const { address } = data;
-  
-      if (!address) return 'Unknown Location';
-  
+
+      if (!address) return "Unknown Location";
+
       const addressParts: string[] = [];
-  
-      if (address.neighbourhood) {
-        addressParts.push(address.neighbourhood);
-      } 
-  
+
       if (address.city) {
         addressParts.push(address.city);
       } else if (address.state_district) {
         addressParts.push(address.state_district);
       }
-  
-   
-  
+
       if (address.state) {
         addressParts.push(address.state);
       }
-  
+
       if (!address.state && address.country) {
         addressParts.push(address.country);
       }
-  
+
       const prioritizedAddress = addressParts.join(", ");
-  
-      return prioritizedAddress || 'Unknown Location';
+
+      return prioritizedAddress || "Unknown Location";
     } catch (error) {
-      console.error('Error fetching address:', error);
-      return 'Unknown Location';
+      console.error("Error fetching address:", error);
+      return "Unknown Location";
     }
   };
-  
 
   return (
     <LocationContext.Provider value={{ location, updateLocation }}>

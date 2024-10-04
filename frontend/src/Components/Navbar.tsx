@@ -90,14 +90,15 @@ const Navbar: React.FC = () => {
             </div>
 
             <h2 className="text-end max-md:text-4xl py-6 px-2 md:text-5xl font-extrabold">Welcome to Neatstreets</h2>
-            <div className={`flex ${isAuthenticated?"bg-blue-700/85 dark:bg-yellow-400/85 my-4":"my-8"} p-4 items-center justify-between my-4 mx-2`}>
+            <div title="Profile" className={`flex ${isAuthenticated?"flex-row-reverse bg-blue-700/85 cursor-pointer dark:bg-yellow-400/85 my-4":"my-8"} p-4 items-center justify-between my-4 mx-2`}>
 
-              <h2 className="text-3xl font-medium max-md:text-4xl">{user?.fullname}</h2>
+              <h2 className="text-3xl text-white font-medium max-md:text-4xl">{user?.fullname}</h2>
 
               {isAuthenticated ? (
                 <Link
-                  className="size-16 border-4 border-slate-600 dark:border-white bg-blue-600 text-center text-5xl dark:bg-yellow-500 text-white rounded-full"
+                  className="size-16 border-4 border-white bg-blue-600 text-center text-5xl dark:bg-yellow-500 text-white rounded-full"
                   to={"/profile"}
+                  title="Open Profile"
                 >
                   {user?.username?.charAt(0)}
                 </Link>

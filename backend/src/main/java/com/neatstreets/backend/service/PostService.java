@@ -57,11 +57,13 @@ public class PostService {
                 .orElseThrow(() -> new RuntimeException("Cannot find Posts in your location"));
 
         List<PostDto> postDtos = posts.stream()
+                .filter(post -> !post.getStatus().equals(PostStatus.COMPLETED))
                 .map(this::convertToPostDto)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(postDtos);
     }
+
 
     public ResponseEntity<?> assignToPost(
             UUID postId,
