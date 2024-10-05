@@ -71,8 +71,8 @@ const WorkflowCarousel: React.FC = () => {
     <div
       className={` ${
         currentIndex % 2 == 0
-          ? "bg-blue-900/95 dark:bg-yellow-400/95 text-white"
-          : "text-blue-900 dark:text-yellow-500"
+          ? "bg-blue-900/95 dark:bg-yellow-500/95 text-white"
+          : "bg-slate-50/35 dark:bg-slate-900/35 text-blue-900 dark:text-yellow-500"
       } workflow-carousel rounded-lg md:w-2/3 max-md:w-5/6 relative mx-auto my-16`}
     >
       {/* Carousel Buttons */}

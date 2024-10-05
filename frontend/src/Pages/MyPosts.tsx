@@ -45,7 +45,9 @@ const MyPosts: React.FC = () => {
   const [showCreatePost, setShowCreatePost] = useState(false);
 
   // State to track the active category
-  const [activeCategory, setActiveCategory] = useState<"NEW" | "IN_PROGRESS" | "COMPLETED">("NEW");
+  const [activeCategory, setActiveCategory] = useState<
+    "NEW" | "IN_PROGRESS" | "COMPLETED"
+  >("NEW");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -75,8 +77,9 @@ const MyPosts: React.FC = () => {
   const filteredPosts = posts.filter((post) => post.status === activeCategory);
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-800 text-black dark:text-white min-h-screen">
+    <div className="relative bg-slate-50 dark:bg-slate-950 text-black dark:text-white min-h-screen">
       <Navbar />
+
       <div className="p-4">
         <div className="flex justify-around items-center my-6 lg:mx-28">
           <h1 className="text-2xl font-bold uppercase">
@@ -105,12 +108,12 @@ const MyPosts: React.FC = () => {
             onClick={handleCreatePostToggle}
           >
             <div
-              className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg max-lg:w-96 w-1/2 relative"
+              className="bg-white dark:bg-slate-950 shadow-lg max-lg:w-96 w-1/2 relative"
               onClick={(e) => e.stopPropagation()}
             >
               <CreatePost onPostCreated={handleNewPost} />
               <button
-                className="absolute top-2 right-2 text-white bg-red-500 hover:bg-red-700 px-2 py-1 rounded-full"
+                className="absolute top-2 right-2 text-white bg-red-500 hover:bg-red-700 px-2 py-1"
                 onClick={handleCreatePostToggle}
               >
                 Close
@@ -119,23 +122,34 @@ const MyPosts: React.FC = () => {
           </div>
         )}
 
-        
         <div className="flex max-xs:flex-col justify-center gap-6 my-6">
           <button
             onClick={() => setActiveCategory("NEW")}
-            className={`px-4 py-2 rounded-lg ${activeCategory === "NEW" ? "bg-blue-700 dark:bg-yellow-500 text-white" : "bg-gray-300 dark:bg-slate-600"}`}
+            className={`px-4 py-2 rounded-lg ${
+              activeCategory === "NEW"
+                ? "bg-blue-700 dark:bg-yellow-500 text-white"
+                : "bg-gray-300 dark:bg-slate-600"
+            }`}
           >
             New
           </button>
           <button
             onClick={() => setActiveCategory("IN_PROGRESS")}
-            className={`px-4 py-2 rounded-lg ${activeCategory === "IN_PROGRESS" ? "bg-blue-700 dark:bg-yellow-500 text-white" : "bg-gray-300 dark:bg-slate-600"}`}
+            className={`px-4 py-2 rounded-lg ${
+              activeCategory === "IN_PROGRESS"
+                ? "bg-blue-700 dark:bg-yellow-500 text-white"
+                : "bg-gray-300 dark:bg-slate-600"
+            }`}
           >
             In Progress
           </button>
           <button
             onClick={() => setActiveCategory("COMPLETED")}
-            className={`px-4 py-2 rounded-lg ${activeCategory === "COMPLETED" ? "bg-blue-700 dark:bg-yellow-500 text-white" : "bg-gray-300 dark:bg-slate-600"}`}
+            className={`px-4 py-2 rounded-lg ${
+              activeCategory === "COMPLETED"
+                ? "bg-blue-700 dark:bg-yellow-500 text-white"
+                : "bg-gray-300 dark:bg-slate-600"
+            }`}
           >
             Completed
           </button>
@@ -159,7 +173,9 @@ const MyPosts: React.FC = () => {
               />
             ))
           ) : (
-            <p className="text-center mt-36 text-lg">No "{activeCategory.toLocaleLowerCase()}" reports available.</p>
+            <p className="text-center mt-36 text-lg">
+              No "{activeCategory.toLocaleLowerCase()}" reports available.
+            </p>
           )}
         </div>
       </div>
@@ -168,7 +184,8 @@ const MyPosts: React.FC = () => {
 };
 
 export default MyPosts;
-{/* Ved Was Here, Now i need to do reportedBy changes to real user name, somewhat ui changes like profile pic typa thing near reportedBy.. Location API to be inserted so can get based on Co ordinates and set it for user and posts... In Backend, need to getPostsByLocation. Then, We can click on marker on Map on our location to fetch those posts.
+{
+  /* Ved Was Here, Now i need to do reportedBy changes to real user name, somewhat ui changes like profile pic typa thing near reportedBy.. Location API to be inserted so can get based on Co ordinates and set it for user and posts... In Backend, need to getPostsByLocation. Then, We can click on marker on Map on our location to fetch those posts.
           
           ROLE BASED 💈🧮 : 
           
@@ -181,4 +198,5 @@ export default MyPosts;
           Making a Profile after clicking that photoTypaStuff, Verification after signup with mail?, Logout in that profile.
 
 
-*/}
+*/
+}

@@ -4,6 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config/config";
 import { useLocation } from "../context/LocationContext";
+import { FaTrash } from "react-icons/fa";
 
 interface Post {
   id: string;
@@ -156,9 +157,9 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
   };
 
   return (
-    <div className="mx-auto my-4 w-full max-w-2xl max-lg:max-w-lg p-4 bg-white dark:bg-slate-700 text-black dark:text-white rounded-lg shadow-md">
-      <h1 className="text-center my-4 text-4xl font-bold uppercase">
-        Create Trash Report
+    <div className="mx-auto w-full max-w-4xl max-lg:max-w-lg p-6 bg-white dark:bg-slate-950 text-black dark:text-white shadow-md">
+      <h1 className="flex gap-4 my-4 text-4xl justify-center items-center font-bold uppercase">
+        Report Trash <FaTrash />
       </h1>
       <form onSubmit={handleSubmit}>
         <textarea
@@ -170,9 +171,9 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
         />
 
         <label htmlFor="post-input" className="cursor-pointer">
-          <div className="p-3 my-4 flex justify-center items-center w-full bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-10 border border-gray-100">
+          <div className="p-3 my-2 w-max mx-auto flex justify-center items-center bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-10 border border-gray-100">
             <h5 className="text-center">
-              {postContent.image?.name || "UPLOAD IMAGE"}
+              {postContent.image?.name || "Add Image"}
             </h5>
             <IoImagesOutline className="ml-2 text-2xl" />
           </div>

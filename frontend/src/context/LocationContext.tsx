@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import React, {
   createContext,
   useContext,
@@ -16,6 +15,7 @@ interface Location {
 interface LocationContextProps {
   location: Location;
   updateLocation: (lat: number, lng: number, address: string) => void;
+  locationGranted: boolean;
 }
 
 const LocationContext = createContext<LocationContextProps | undefined>(
@@ -39,24 +39,24 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
       ? JSON.parse(savedLocation)
       : { lat: null, lng: null, address: "" };
   });
+  const [locationGranted, setLocationGranted] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const updateLocation = (lat: number, lng: number, address: string) => {
     const newLocation = { lat, lng, address };
     setLocation(newLocation);
-    sessionStorage.setItem("location", JSON.stringify(newLocation)); 
+    sessionStorage.setItem("location", JSON.stringify(newLocation));
+    setLocationGranted(true); // Location access granted
   };
 
   const isLocationChanged = (
     newLat: number | null,
     newLng: number | null
   ): boolean => {
-    return (
-      newLat !== location.lat || newLng !== location.lng
-    );
+    return newLat !== location.lat || newLng !== location.lng;
   };
 
   useEffect(() => {
-    
     if (!location.lat || !location.lng) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -64,14 +64,17 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
             const { latitude, longitude } = position.coords;
             fetchAddress(latitude, longitude).then((address) => {
               updateLocation(latitude, longitude, address);
+              setShowAlert(false); // Hide alert if access is granted
             });
           },
-          (error) => console.error("Error fetching location:", error),
+          (error) => {
+            console.error("Error fetching location:", error);
+            setShowAlert(true); // Show alert if location is not allowed
+          },
           { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
         );
       }
     } else {
-    
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
@@ -85,9 +88,9 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
       );
 
-      
       return () => navigator.geolocation.clearWatch(watchId);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.lat, location.lng]);
 
   const fetchAddress = async (lat: number, lng: number): Promise<string> => {
@@ -96,30 +99,21 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
       );
       const data = await response.json();
-
       const { address } = data;
 
-      if (!address) return "Unknown Location";
-
       const addressParts: string[] = [];
-
       if (address.city) {
         addressParts.push(address.city);
       } else if (address.state_district) {
         addressParts.push(address.state_district);
       }
-
       if (address.state) {
         addressParts.push(address.state);
       }
-
       if (!address.state && address.country) {
         addressParts.push(address.country);
       }
-
-      const prioritizedAddress = addressParts.join(", ");
-
-      return prioritizedAddress || "Unknown Location";
+      return addressParts.join(", ") || "Unknown Location";
     } catch (error) {
       console.error("Error fetching address:", error);
       return "Unknown Location";
@@ -127,8 +121,15 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   return (
-    <LocationContext.Provider value={{ location, updateLocation }}>
-      {children}
+    <LocationContext.Provider
+      value={{ location, updateLocation, locationGranted }}
+    >
+      {showAlert && (
+        <div className="h-screen w-full flex justify-center items-center text-4xl dark:text-white">
+          Please allow location access to use this website.
+        </div>
+      )}
+      {!showAlert && children}
     </LocationContext.Provider>
   );
 };

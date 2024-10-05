@@ -25,7 +25,7 @@ const DarkModeToggle: React.FC = () => {
   return (
     <button
       onClick={handleToggle}
-      className=" p-2 bg-gray-200 dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded"
+      className=" p-2 text-gray-800 dark:text-gray-200"
     >
       {darkMode ? <MdLightMode className='size-6 text-yellow-500' /> : <MdDarkMode className='size-6 text-slate-800'/>}
     </button>

@@ -12,10 +12,10 @@ const GoToMapSection : React.FC = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h1 className="text-center font-bold text-blue-700 dark:text-yellow-400 text-5xl uppercase">
+      <h1 className="text-center font-bold text-blue-800 dark:text-yellow-500 text-5xl uppercase">
         Trash Report Map
       </h1>
-      <p className="font-thin underline text-center text-blue-700 dark:text-yellow-400 text-3xl uppercase">
+      <p className="font-thin underline text-center text-blue-700 dark:text-yellow-500 text-3xl uppercase">
         Way to Map{" "}
         <FaArrowTurnDown className="ml-2 font-thin text-center underline inline-block" />
       </p>
@@ -24,7 +24,7 @@ const GoToMapSection : React.FC = () => {
           <img className="mx-auto  md:w-5/6" src="/WayToMap.png" alt="" />
         </Link>
       </button>
-      <h3 className="font-light text-center text-3xl text-blue-700 dark:text-yellow-400">
+      <h3 className="font-light text-center text-3xl text-blue-800 dark:text-yellow-500">
         "Cleanliness is Next to Godliness."
       </h3>
     </motion.div>

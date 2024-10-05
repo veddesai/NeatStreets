@@ -41,7 +41,7 @@ const Form: React.FC<Props> = ({ type }) => {
     throw new Error("AuthContext must be used within an AuthProvider");
   }
 
-  const { login } = authContext;
+  const { login,setSignupData } = authContext;
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,15 +69,20 @@ const Form: React.FC<Props> = ({ type }) => {
           fullname: target.fullname.value,
           email: target.email.value,
           password: target.password.value,
-          role: role,
+          role: role as Role,
         } as SignUpFormData;
+        setSignupData(formData);
+        const response = await axios.post(`${API_URL}/auth/verify`, formData);
+        if (
+          response.status == 200 &&
+          response.data.message === "OTP sent to your email."
+        ) {
+          setMessage("Sign up successful! Redirecting to verification page...");
 
-        await axios.post(`${API_URL}/auth/signup`, formData);
-        setMessage("Sign up successful! Redirecting to verification page...");
-
-        setTimeout(() => {
-          navigate("/verify");
-        }, 2000);
+          navigate("/verify", { replace: true });
+        } else {
+          setError("Give Proper Email..!");
+        }
       } else {
         formData = {
           email: target.email.value,
@@ -92,7 +97,7 @@ const Form: React.FC<Props> = ({ type }) => {
         if (loginSuccess) {
           setMessage("Login successful! Redirecting to Home Page...");
           setTimeout(() => {
-            navigate("/");
+            navigate("/", { replace: true });
           }, 2000);
         } else {
           setError("Invalid Credentials. Please try again.");
@@ -110,7 +115,7 @@ const Form: React.FC<Props> = ({ type }) => {
   }
 
   return (
-    <div className="h-screen w-full lg:fixed flex flex-col items-center py-20 bg-white dark:bg-slate-800">
+    <div className="h-screen w-full lg:fixed flex flex-col items-center py-20 bg-slate-50 dark:bg-slate-950">
       <motion.div
         className={`form-container rounded-md sm:flex ${
           isFlexRowReverse ? "sm:flex-row-reverse" : "sm:flex-row"
@@ -187,7 +192,9 @@ const Form: React.FC<Props> = ({ type }) => {
                   required
                 />
 
-                <div className="text-blue-600 dark:text-yellow-400 underline">Registering... as a {role}</div>
+                <div className="text-blue-600 dark:text-yellow-400 underline">
+                  Registering... as a {role}
+                </div>
 
                 <Link
                   className="sm:hidden text-center font-semibold"

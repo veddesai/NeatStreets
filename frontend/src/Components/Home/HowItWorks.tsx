@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 const HowItWorks : React.FC = () => {
   return (
     <motion.div
-      className="p-16 max-sm:p-8 bg-slate-100 max-md:gap-8 dark:bg-slate-900"
+      className="relative p-16 max-sm:p-8 max-md:gap-8 "
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -12,7 +12,7 @@ const HowItWorks : React.FC = () => {
         HOW NEATSTREETS WORKS?
       </h1>
       <WorkFlow />
-      <h3 className="font-light text-center text-3xl text-blue-800 dark:text-yellow-400">
+      <h3 className="font-light text-center text-3xl text-blue-800 dark:text-yellow-500">
         "Keep Your Surroundings Clean"
       </h3>
     </motion.div>

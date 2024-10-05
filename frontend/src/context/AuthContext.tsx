@@ -35,6 +35,10 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signupData: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setSignupData: any;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,6 +46,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [signupData, setSignupData] = useState(null);
   const navigate = useNavigate();
   const checkAuth = async () => {
     try {
@@ -99,6 +104,8 @@ const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     isAuthenticated,
     login,
     logout,
+    signupData,
+    setSignupData
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

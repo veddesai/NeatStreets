@@ -59,7 +59,7 @@ const Profile: React.FC = () => {
       <Navbar />
       <div className="flex justify-center items-center h-[90vh]">
         <motion.div
-          className="shadow-xl max-w-5xl h-max w-full dark:text-white p-8 "
+          className="shadow-xl max-w-5xl h-max w-full dark:text-white dark:bg-black p-8 "
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}

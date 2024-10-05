@@ -112,7 +112,7 @@ const Post: React.FC<PostProps> = ({
 
   return (
     <motion.div
-      className="max-w-3xl mx-auto my-4 p-6 bg-white dark:bg-slate-700 rounded-lg shadow-lg"
+      className="max-w-3xl mx-auto my-4 p-6 bg-white dark:bg-slate-900 border rounded-lg shadow-lg"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -120,7 +120,7 @@ const Post: React.FC<PostProps> = ({
       <img
         src={imageUrl}
         alt="Trash Reported"
-        className="w-full h-60 object-cover rounded-md mb-4 cursor-pointer"
+        className="w-max h-60 mx-auto rounded-md mb-4 cursor-pointer"
         onClick={openImageModal}
       />
 

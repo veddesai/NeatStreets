@@ -1,11 +1,10 @@
 
 import React from "react";
-
 const FormSkeletonLoader: React.FC = () => {
   return (
     <div className="h-screen w-full flex flex-col fixed items-center py-9 bg-white dark:bg-slate-800">
       <div
-        className="form-container rounded-md sm:flex sm:flex-row w-max max-md:w-[75%] max-xs:w-[95%] shadow-lg dark:shadow-slate-900"
+        className="form-container rounded-md sm:flex sm:flex-row w-full max-w-4xl mx-auto shadow-lg dark:shadow-slate-900"
       >
         <div className="rounded-md md:w-[60%] p-6 max-md:p-8 dark:bg-slate-800 bg-white dark:text-white text-black">
           <div className="animate-pulse">
@@ -26,5 +25,6 @@ const FormSkeletonLoader: React.FC = () => {
     </div>
   );
 };
+
 
 export default FormSkeletonLoader;

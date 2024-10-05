@@ -73,7 +73,7 @@ const Posts: React.FC = () => {
   const filteredPosts = posts.filter((post) => post.status === filter);
 
   return (
-    <div className="bg-slate-50 dark:bg-slate-800 text-black dark:text-white min-h-screen">
+    <div className="bg-slate-50 dark:bg-slate-950 text-black dark:text-white min-h-screen">
       <Navbar />
       <div className="p-4">
         <div className="flex justify-around items-center my-6 lg:mx-28">
@@ -83,7 +83,7 @@ const Posts: React.FC = () => {
           {user?.role !== Role.HELPER && (
             <button
               onClick={handleCreatePostToggle}
-              className="text-2xl flex items-center bg-blue-700 dark:bg-yellow-500 outline-none text-white p-2 rounded-lg"
+              className="text-2xl flex border-2 items-center bg-blue-700 dark:bg-yellow-500 text-white p-2 rounded-lg"
             >
               <IoIosCreate className="mr-2" />
               {showCreatePost ? "Cancel" : "Create Report"}
@@ -122,7 +122,7 @@ const Posts: React.FC = () => {
             onClick={handleCreatePostToggle}
           >
             <div
-              className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg max-lg:w-96 w-1/2 relative"
+              className="bg-white dark:bg-slate-800 rounded-lg shadow-lg max-lg:w-96 w-1/2 relative"
               onClick={(e) => e.stopPropagation()}
             >
               <CreatePost onPostCreated={handleNewPost} />

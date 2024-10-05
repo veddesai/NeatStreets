@@ -1,20 +1,74 @@
+
+// tailwind.config.js
+
+import svgToDataUri from "mini-svg-data-uri"
+import flattenColorPalette  from 'tailwindcss/lib/util/flattenColorPalette';
+
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode:'class',
+  darkMode: 'class',
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       screens: {
-        'xs': '480px',    // Extra small devices (phones, less than 576px)
-        'sm': '640px',    // Small devices (tablets, 640px and up)
-        'md': '768px',    // Medium devices (desktops, 768px and up)
-        'lg': '1024px',   // Large devices (large desktops, 1024px and up)
-        'xl': '1280px',   // Extra large devices (1280px and up)
-        '2xl': '1440px',  // 2x large devices (1440px and up)
-        '3xl': '1600px',  // 3x large devices (1600px and up)
-        '4xl': '1920px',  // 4x large devices (1920px and up)
-      }
+        'xs': '480px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1440px',
+        '3xl': '1600px',
+        '4xl': '1920px',
+      },
+     
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'slide-down': 'slideDown 0.5s ease-in-out forwards',
+      },
+      
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideDown: {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [addVariablesForColors,function ({ matchUtilities, theme }) {
+    matchUtilities(
+      {
+        "bg-grid": (value) => ({
+          backgroundImage: `url("${svgToDataUri(
+            `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`
+          )}")`,
+        }),
+        "bg-grid-small": (value) => ({
+          backgroundImage: `url("${svgToDataUri(
+            `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="8" height="8" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`
+          )}")`,
+        }),
+        "bg-dot": (value) => ({
+          backgroundImage: `url("${svgToDataUri(
+            `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="none"><circle fill="${value}" id="pattern-circle" cx="10" cy="10" r="1.6257413380501518"></circle></svg>`
+          )}")`,
+        }),
+      },
+      { values: flattenColorPalette(theme("backgroundColor")), type: "color" }
+    );
+  },],
 };
+
+function addVariablesForColors({ addBase, theme }) {
+  let allColors = flattenColorPalette(theme("colors"));
+  let newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+
+  addBase({
+    ":root": newVars,
+  });
+}
