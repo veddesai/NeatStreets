@@ -6,11 +6,16 @@ import { API_URL } from "../config/config";
 import { useLocation } from "../context/LocationContext";
 import { FaTrash } from "react-icons/fa";
 
+
+
+
 interface Post {
   id: string;
   description: string;
   imageUrl: string;
-  location: string;
+  lat: number;
+  lng: number;
+  address: string;
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;
@@ -52,7 +57,9 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
     description: "",
     reportedAt: new Date(),
     status: "NEW" as PostStatus,
-    location: location.address as string,
+    lat: location.lat as number,
+    lng: location.lng as number,
+    address: location.address as string,
     reportedBy: {
       id: user?.id || "",  
       email: user?.email || "",
@@ -100,7 +107,9 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
         reportedAt: postContent.reportedAt.toISOString(),
         reportedBy: postContent.reportedBy,
         imageUrl: imageUrl,
-        location: postContent.location
+        lat: postContent.lat,
+        lng: postContent.lng,
+        address: postContent.address
       };
       
 
@@ -171,7 +180,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
         />
 
         <label htmlFor="post-input" className="cursor-pointer">
-          <div className="p-3 my-2 w-max mx-auto flex justify-center items-center bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-10 border border-gray-100">
+          <div className="p-3 my-2 w-full mx-auto flex justify-center items-center bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-10 border border-gray-100">
             <h5 className="text-center">
               {postContent.image?.name || "Add Image"}
             </h5>

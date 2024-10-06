@@ -106,7 +106,7 @@ public class UserService {
 
 
                 PostDto apply = new PostDto(
-                        post1.getId(), post1.getDescription(), post1.getImageUrl(),post1.getLocation(),post1.getReportedAt(),post1.getStatus(),reportedByDto,assignedToDto,post1.getCompletionTime()
+                        post1.getId(), post1.getDescription(), post1.getImageUrl(), post1.getLat(), post1.getLng(),post1.getAddress(),post1.getReportedAt(),post1.getStatus(),reportedByDto,assignedToDto,post1.getCompletionTime()
                 );
                 postDtos.add(apply);
             }
@@ -138,6 +138,8 @@ public class UserService {
                 user.getFullname()
         );
     }
+
+
 
 
 }

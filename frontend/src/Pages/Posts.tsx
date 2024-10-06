@@ -26,7 +26,9 @@ interface Post {
   id: string;
   description: string;
   imageUrl: string;
-  location: string;
+  lat: number;
+  lng: number;
+  address: string;
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;
@@ -42,20 +44,26 @@ const Posts: React.FC = () => {
   }
   const { user } = authContext;
   const [posts, setPosts] = useState<Array<Post>>([]);
+  const removePost = (postId: string) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+  };
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [filter, setFilter] = useState<"NEW" | "IN_PROGRESS">("NEW");
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get(`${API_URL}/posts/${location.address}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${API_URL}/posts/location?lat=${location.lat}&lng=${location.lng}`,
+        {
+          withCredentials: true,
+        }
+      );
       setPosts(response.data);
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
   };
-
+  //need to change location obj to direct send lat,lng,address etc..
   useEffect(() => {
     fetchPosts();
   }, [location.address]);
@@ -136,7 +144,7 @@ const Posts: React.FC = () => {
           </div>
         )}
 
-        {/* Render Filtered Posts or No Active Reports Message */}
+        
         <div>
           {filteredPosts.length === 0 ? (
             <p className="text-center text-4xl max-md:text-2xl font-semibold text-gray-600 dark:text-gray-300 mt-48">
@@ -150,12 +158,16 @@ const Posts: React.FC = () => {
                 id={post.id}
                 description={post.description}
                 imageUrl={post.imageUrl}
-                location={post.location}
+                address={post.address}
                 reportedAt={post.reportedAt}
                 status={post.status}
                 reportedBy={post.reportedBy}
                 assignedTo={post.assignedTo}
                 completionTime={post.completionTime}
+                lat={post.lat}
+                lng={post.lng}
+                deletable={user?.id === post.reportedBy.id}
+                onDelete={removePost}
               />
             ))
           )}
@@ -166,4 +178,3 @@ const Posts: React.FC = () => {
 };
 
 export default Posts;
-

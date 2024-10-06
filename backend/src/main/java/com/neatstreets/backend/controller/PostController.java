@@ -1,6 +1,6 @@
 package com.neatstreets.backend.controller;
 
-import com.neatstreets.backend.dtos.HelperDto;
+
 import com.neatstreets.backend.dtos.PostDto;
 import com.neatstreets.backend.service.PostService;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +18,24 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("/{location}")
-    public ResponseEntity<?> getPostsByLocation(@PathVariable String location){
-        return postService.getPostsByLocation(location);
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllPosts(){
+        return postService.getAllPosts();
     }
+
+    @DeleteMapping("{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable UUID postId){
+        return postService.deletePost(postId);
+    }
+
+    @GetMapping("/location")
+    public ResponseEntity<?> getPostsByLocation(
+            @RequestParam double lat,
+            @RequestParam double lng) {
+
+        return postService.getPostsByLocation(lat,lng);
+    }
+
 
     @PostMapping("/create")
     public ResponseEntity<?> createPost(@RequestBody PostDto postDto) {

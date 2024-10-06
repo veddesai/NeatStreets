@@ -14,78 +14,31 @@ export const BackgroundBeams = ({
   const parentRef = useRef<HTMLDivElement>(null);
 
   const beams = [
-    {
-      initialX: 10,
-      translateX: 10,
-      duration: 7,
-      repeatDelay: 3,
-      delay: 2,
-    },
-    {
-      initialX: 80,
-      translateX: 80,
-      duration: 7,
-      repeatDelay: 3,
-      delay: 2,
-    },
-    {
-      initialX: 150,
-      translateX: 150,
-      duration: 7,
-      repeatDelay: 3,
-      delay: 2,
-    },
-    {
-      initialX: 600,
-      translateX: 600,
-      duration: 3,
-      repeatDelay: 3,
-      delay: 4,
-    },
-    {
-      initialX: 100,
-      translateX: 100,
-      duration: 7,
-      repeatDelay: 7,
-      className: "h-6",
-    },
-    {
-      initialX: 400,
-      translateX: 400,
-      duration: 5,
-      repeatDelay: 14,
-      delay: 4,
-    },
-    {
-      initialX: 800,
-      translateX: 800,
-      duration: 11,
-      repeatDelay: 2,
-      className: "h-20",
-    },
-    {
-      initialX: 1000,
-      translateX: 1000,
-      duration: 4,
-      repeatDelay: 2,
-      className: "h-12",
-    },
-    {
-      initialX: 900,
-      translateX: 1000,
-      duration: 4,
-      repeatDelay: 2,
-      className: "h-12",
-    },
-    {
-      initialX: 1200,
-      translateX: 1200,
-      duration: 6,
-      repeatDelay: 4,
-      delay: 2,
-      className: "h-6",
-    },
+    { initialX: 10, translateX: 10, duration: 7, repeatDelay: 3, delay: 2 },
+    { initialX: 150, translateX: 150, duration: 7, repeatDelay: 3, delay: 2 },
+    { initialX: 600, translateX: 600, duration: 3, repeatDelay: 3, delay: 4 },
+    { initialX: 400, translateX: 400, duration: 5, repeatDelay: 14, delay: 4 },
+    { initialX: 800, translateX: 800, duration: 11, repeatDelay: 2, className: "h-20" },
+    { initialX: 1000, translateX: 1000, duration: 4, repeatDelay: 2, className: "h-12" },
+    { initialX: 900, translateX: 1000, duration: 4, repeatDelay: 2, className: "h-12" },
+    { initialX: 1200, translateX: 1200, duration: 6, repeatDelay: 4, delay: 2, className: "h-6" },
+  
+    // New Beams
+    { initialX: 50, translateX: 50, duration: 8, repeatDelay: 5, delay: 1, className: "h-8" },
+    { initialX: 250, translateX: 250, duration: 10, repeatDelay: 6, delay: 3, className: "h-10" },
+    { initialX: 550, translateX: 550, duration: 6, repeatDelay: 3, delay: 2, className: "h-16" },
+    { initialX: 650, translateX: 650, duration: 7, repeatDelay: 5, className: "h-14" },
+    { initialX: 850, translateX: 850, duration: 9, repeatDelay: 3, className: "h-18" },
+    { initialX: 950, translateX: 950, duration: 5, repeatDelay: 4, delay: 1, className: "h-20" },
+    { initialX: 1150, translateX: 1150, duration: 6, repeatDelay: 2, className: "h-12" },
+    { initialX: 1300, translateX: 1300, duration: 8, repeatDelay: 4, delay: 3, className: "h-24" },
+    { initialX: 1400, translateX: 1400, duration: 7, repeatDelay: 5, delay: 2, className: "h-6" },
+    { initialX: 1600, translateX: 1600, duration: 10, repeatDelay: 3, delay: 5, className: "h-14" },
+    { initialX: 1750, translateX: 1750, duration: 6, repeatDelay: 4, delay: 2, className: "h-18" },
+    { initialX: 1850, translateX: 1850, duration: 9, repeatDelay: 6, delay: 1, className: "h-16" },
+    { initialX: 1950, translateX: 1950, duration: 7, repeatDelay: 2, delay: 3, className: "h-10" },
   ];
+  
 
   return (
     <div

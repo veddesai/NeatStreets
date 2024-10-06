@@ -72,8 +72,9 @@ const Navbar: React.FC = () => {
           />
         </div>
 
-        <div className="max-xs:hidden w-1/2">
-        <TypewriterEffectSmooth className="mx-auto" words={[{text:"Cleanliness Brings Clarity"}]}/>
+        <div className="max-md:hidden ">
+          
+        <TypewriterEffectSmooth className="mx-auto md:text-[2rem] max-xl:text-[2.25rem] font-bold text-center font-baskerville text-blue-800 dark:text-yellow-500 xl:text-[2.75rem]" words={[{text:'Cleanliness Brings Clarity'}]}/>
           
         </div>
 
@@ -94,7 +95,7 @@ const Navbar: React.FC = () => {
           </button>
         </div>
       </nav>
-      <div className="offcanvas-container">
+      <div className="offcanvas-container z-[1000]">
         <div
           className={`fixed inset-0 z-40 bg-black transition-opacity ${
             isOpen ? "opacity-20" : "hidden pointer-events-none"

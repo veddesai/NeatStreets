@@ -26,7 +26,9 @@ interface Post {
   id: string;
   description: string;
   imageUrl: string;
-  location: string;
+  lat: number;
+  lng: number;
+  address: string;
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;
@@ -42,6 +44,9 @@ const MyPosts: React.FC = () => {
   }
   const { user } = authContext;
   const [posts, setPosts] = useState<Array<Post>>([]);
+  const removePost = (postId: string) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+  };
   const [showCreatePost, setShowCreatePost] = useState(false);
 
   // State to track the active category
@@ -164,12 +169,16 @@ const MyPosts: React.FC = () => {
                 id={post.id}
                 description={post.description}
                 imageUrl={post.imageUrl}
-                location={post.location}
+                address={post.address}
                 reportedAt={post.reportedAt}
                 status={post.status}
                 reportedBy={post.reportedBy}
                 assignedTo={post.assignedTo}
                 completionTime={post.completionTime}
+                lat={post.lat}
+                lng={post.lng}
+                deletable={true}
+                onDelete={removePost}
               />
             ))
           ) : (

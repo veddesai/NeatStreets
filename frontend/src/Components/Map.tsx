@@ -1,82 +1,104 @@
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import "leaflet.markercluster";  // Import marker cluster
 import { useEffect, useRef } from "react";
-import "maplibre-gl/dist/maplibre-gl.css";
+import axios from "axios";
+import { API_URL } from "../config/config";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+
 import markerIconPng from "leaflet/dist/images/marker-icon.png";
 import markerIconRetinaPng from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadowPng from "leaflet/dist/images/marker-shadow.png";
 import { useLocation } from "../context/LocationContext";
-import axios from "axios";
-import "../assets/utils.css"
-import { API_URL } from "../config/config";
-import { useNavigate } from "react-router-dom";
+
+enum Role {
+  END_USER = "END_USER",
+  ADMIN = "ADMIN",
+  HELPER = "HELPER",
+}
+
+
+
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  role: Role;
+  fullname: string;
+}
+
+
+interface Post {
+  id: string;
+  description: string;
+  imageUrl: string;
+  lat: number;
+  lng: number;
+  address: string;
+  reportedAt: string;
+  status: "NEW" | "IN_PROGRESS" | "COMPLETED";
+  reportedBy: User;
+  assignedTo?: User;
+  completionTime?: string;
+}
 
 const Map: React.FC = () => {
   const mapRef = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.Marker | null>(null);
-  const { location } = useLocation();
-  const navigate = useNavigate();
+  const location = useLocation();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const markerClusterGroup = useRef<any>(null); // Cluster Group
 
-  const fetchReportCount = async () => {
+  const fetchReportData = async () => {
     try {
-      const response = await axios.get(`${API_URL}/posts/${location.address}`, {
+      const response = await axios.get(`${API_URL}/posts/all`, {
         withCredentials: true,
       });
-      const reportCount = response.data.length;
-      if (markerRef.current !== null) {
-        markerRef.current
-          .bindTooltip(
-            `
-          <div class="font-bold">
-           <div>Hello from <span class="text-blue-600 dark:text-yellow-500">${location.address}</span> </div>
-           <div> No. of Reports Here : <span class="text-blue-600 dark:text-yellow-500">${reportCount}</span></div>
+
+      response.data.forEach((report:Post) => {
+        const marker = L.marker([report.lat, report.lng], {
+          icon: L.icon({
+            iconUrl: markerIconPng,
+            iconRetinaUrl: markerIconRetinaPng,
+            shadowUrl: markerShadowPng,
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41],
+          }),
+        }).bindPopup(`
+          <div>
+            <h3>${report.description}</h3>
+            <p>Status: ${report.status}</p>
+            <p>Reported At: ${new Date(report.reportedAt).toLocaleDateString()}</p>
+            <a href="/posts">View Report</a>
           </div>
-     
-            `
-          )
-          .openTooltip()
-          .addEventListener("click", () => navigate("/posts"));
-      }
+        `);
+
+        markerClusterGroup.current?.addLayer(marker); // Add marker to cluster group
+      });
+
+      mapRef.current?.addLayer(markerClusterGroup.current); // Add cluster group to map
     } catch (error) {
-      console.error("Error fetching report count:", error);
+      console.error("Error fetching report data:", error);
     }
   };
 
-  const customIcon = L.icon({
-    iconUrl: markerIconPng,
-    iconRetinaUrl: markerIconRetinaPng,
-    shadowUrl: markerShadowPng,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41],
-  });
-
   useEffect(() => {
-    if (!location.lat || !location.lng) return;
-
     if (mapRef.current === null) {
-      const map = L.map("map").setView([location.lat, location.lng], 15);
-      const marker = L.marker([location.lat, location.lng], {
-        icon: customIcon,
-      }).addTo(map);
+      const map = L.map("map").setView([location.location.lat ?? 0, location.location.lng ?? 0], 13);
       mapRef.current = map;
-      markerRef.current = marker;
-      markerRef.current.bindTooltip(` <div>Hello from <span class="text-blue-600 dark:text-yellow-500">${location.address}</span> </div>`);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        minZoom: 2,
-      }).addTo(map);
-    } else if (markerRef.current !== null) {
-      markerRef.current.setLatLng([location.lat, location.lng]);
+      markerClusterGroup.current = L.markerClusterGroup();
 
-      mapRef.current.setView([location.lat, location.lng]);
-      fetchReportCount();
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(map);
+
+      fetchReportData();
     }
-  }, [location, customIcon]);
-//Have to do something reg this - Ved
-  return <div id="map" className="fixed h-screen w-[100%]"></div>;
+  }, []);
+
+  return <div id="map" className="h-screen w-full z-10"></div>;
 };
 
 export default Map;

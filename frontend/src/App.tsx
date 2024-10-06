@@ -10,6 +10,10 @@ import { AuthProvider } from "./context/AuthContext";
 import MyPosts from "./Pages/MyPosts";
 import Posts from "./Pages/Posts";
 import { LocationProvider } from "./context/LocationContext";
+import Success from "./Pages/Success";
+import About from "./Pages/About";
+import Contact from "./Pages/Contact";
+
 
 function App() {
   return (
@@ -20,9 +24,12 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/signin" element={<Signin />} />
+              <Route path="/about" element={<About/>}/>
+              <Route path="/contact" element={<Contact/>}/>
               <Route path="/signup" element={<Signup />} />
               <Route path="/trashmap" element={<Trashmap />} />
               <Route path="/verify" element={<Verification />} />
+              <Route path="/success" element={<Success/>}/>
               <Route path="/profile" element={<Profile />} />
               <Route path="/posts" element={<Posts />} />
               <Route path="/posts/:id" element={<MyPosts />} />

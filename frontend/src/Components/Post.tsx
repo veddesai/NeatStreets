@@ -24,24 +24,30 @@ interface PostProps {
   id: string;
   description: string;
   imageUrl: string;
-  location: string;
+  lat: number;
+  lng: number;
+  address: string;
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;
   assignedTo?: User;
   completionTime?: string;
+  deletable?: boolean;
+  onDelete?: (id: string) => void;
 }
 
 const Post: React.FC<PostProps> = ({
   id,
   description,
   imageUrl,
-  location,
+  address,
   reportedAt,
   status,
   reportedBy,
   assignedTo,
   completionTime,
+  deletable,
+  onDelete
 }) => {
   const authContext = useContext(AuthContext);
   if (authContext === undefined) {
@@ -79,6 +85,22 @@ const Post: React.FC<PostProps> = ({
       console.log(response.data);
     } catch (error) {
       console.error("Error assigning to helper:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(`${API_URL}/posts/${id}`, {
+        withCredentials: true,
+      });
+      if(response.status == 200){
+        console.log("Post deleted successfully:", response.data);
+        if (onDelete) {
+          onDelete(id); 
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
     }
   };
 
@@ -158,7 +180,7 @@ const Post: React.FC<PostProps> = ({
       {/* Location */}
       <div className="flex items-center text-gray-600 dark:text-gray-300 mt-4">
         <FaMapMarkerAlt className="mr-2" />
-        <span>{location}</span>
+        <span>{address}</span>
       </div>
 
       {/* Post Status */}
@@ -214,6 +236,15 @@ const Post: React.FC<PostProps> = ({
         <div className="text-sm text-gray-500 dark:text-gray-400">
           Completed on: {new Date(completionTimeState).toLocaleString()}
         </div>
+      )}
+
+      {deletable && (
+        <button
+          className="mt-4 px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700"
+          onClick={handleDelete}
+        >
+          Delete
+        </button>
       )}
 
       {/* Assign to me (only if the user is a HELPER and the post is new) */}

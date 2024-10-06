@@ -122,7 +122,7 @@ export const SignUpRedirect: React.FC = () => {
             <h1 className="font-bold uppercase mb-20 text-blue-800 dark:text-yellow-500 text-5xl max-lg:text-4xl">
               Welcome, Helper!
             </h1>
-            <h1 className="font-bold mt-10 text-4xl">
+            <h1 className="font-bold text-4xl">
               <span className="underline">Hi</span>,
               <span className="text-blue-800 dark:text-yellow-500">
                 {user?.fullname}!
@@ -156,7 +156,7 @@ export const SignUpRedirect: React.FC = () => {
 
             <div className="bg-blue-800 dark:bg-yellow-500 my-10 max-lg:mx-8 lg:mx-96 text-2xl text-white px-6 py-2">
               <Link to={"/posts"}>
-                View reports assigned to you or mark them as completed.
+                View Nearby Reports to get assigned
               </Link>
             </div>
           </div>

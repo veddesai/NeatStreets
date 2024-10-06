@@ -1,6 +1,5 @@
 package com.neatstreets.backend.service;
 
-import com.neatstreets.backend.dtos.HelperDto;
 import com.neatstreets.backend.dtos.PostDto;
 import com.neatstreets.backend.dtos.UserDto;
 import com.neatstreets.backend.enums.PostStatus;
@@ -11,10 +10,10 @@ import com.neatstreets.backend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,6 +23,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+;
 
     public PostService(PostRepository postRepository, UserRepository userRepository){
         this.postRepository = postRepository;
@@ -39,22 +39,34 @@ public class PostService {
         }
 
 
+
         Post post = new Post()
                 .setDescription(postDto.getDescription())
-                .setLocation(postDto.getLocation())
+                .setImageUrl(postDto.getImageUrl())
+                .setLat(postDto.getLat())
+                .setLng(postDto.getLng())
+                .setAddress(postDto.getAddress())
                 .setReportedAt(postDto.getReportedAt())
-                .setStatus(postDto.getStatus()).setImageUrl(postDto.getImageUrl())
+                .setStatus(postDto.getStatus())
                 .setReportedBy(reportedByUser.get())
                 .setCompletionTime(postDto.getCompletionTime());
 
         postRepository.save(post);
-        PostDto postDtos = new PostDto(post.getId(),post.getDescription(),post.getImageUrl(),post.getLocation(),post.getReportedAt(),post.getStatus(),postDto.getReportedBy(),postDto.getAssignedTo(),post.getCompletionTime());
+        PostDto postDtos = new PostDto(post.getId(), post.getDescription(), post.getImageUrl(), post.getLat(),post.getLng(),post.getAddress(), post.getReportedAt(), post.getStatus(), postDto.getReportedBy(), postDto.getAssignedTo(), post.getCompletionTime());
         return ResponseEntity.status(HttpStatus.CREATED).body(postDtos);
     }
 
-    public ResponseEntity<List<PostDto>> getPostsByLocation(String location) {
-        List<Post> posts = postRepository.findByLocationOrderByReportedAtDesc(location)
-                .orElseThrow(() -> new RuntimeException("Cannot find Posts in your location"));
+
+    public ResponseEntity<?> getAllPosts(){
+        return ResponseEntity.ok(postRepository.findAll());
+    }
+
+    public ResponseEntity<List<PostDto>> getPostsByLocation(double lat, double lng) {
+        List<Post> posts = postRepository.findByLatAndLngOrderByReportedAtDesc(lat, lng).orElseThrow(()-> new Error("Can't find posts by your location."));
+
+        if (posts.isEmpty()) {
+            throw new RuntimeException("Cannot find Posts at the specified location.");
+        }
 
         List<PostDto> postDtos = posts.stream()
                 .filter(post -> !post.getStatus().equals(PostStatus.COMPLETED))
@@ -64,6 +76,10 @@ public class PostService {
         return ResponseEntity.ok(postDtos);
     }
 
+    public ResponseEntity<?> deletePost(UUID id){
+        postRepository.deleteById(id);
+        return ResponseEntity.ok(Map.of("message","Successfully deleted your report."));
+    }
 
     public ResponseEntity<?> assignToPost(
             UUID postId,
@@ -142,12 +158,15 @@ public class PostService {
                 .setImageUrl(post.getImageUrl())
                 .setDescription(post.getDescription())
                 .setReportedAt(post.getReportedAt())
-                .setLocation(post.getLocation())
+                .setLat(post.getLat())
+                .setLng(post.getLng())
+                .setAddress(post.getAddress())
                 .setStatus(post.getStatus())
                 .setReportedBy(reportedByDto)
                 .setAssignedTo(assignedToDto)
                 .setCompletionTime(post.getCompletionTime());
     }
+
 
 
 

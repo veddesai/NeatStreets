@@ -1,6 +1,8 @@
 package com.neatstreets.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
+
 import com.neatstreets.backend.enums.PostStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,7 +31,11 @@ public class Post {
 
     private String imageUrl;
 
-    private String location;
+    private double lat;
+
+    private double lng;
+
+    private String address;
 
     private Date reportedAt;
 

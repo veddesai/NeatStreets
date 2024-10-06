@@ -54,6 +54,11 @@ const Profile: React.FC = () => {
       ? countReportsByStatus(user.reportedPosts)
       : { NEW: 0, IN_PROGRESS: 0, COMPLETED: 0 };
 
+  const assignedReportCounts =
+    isAuthenticated && user?.assignedPosts
+      ? countReportsByStatus(user.assignedPosts)
+      : { NEW: 0, IN_PROGRESS: 0, COMPLETED: 0 };
+
   return (
     <>
       <Navbar />
@@ -70,7 +75,7 @@ const Profile: React.FC = () => {
               className={`flex justify-center gap-6 p-4 items-center mb-4`}
             >
               <Link
-                className="size-16 border-4 border-white bg-blue-600 text-center text-5xl dark:bg-yellow-500 text-white rounded-full"
+                className="size-16 border-4 border-slate-400 bg-blue-800 text-center text-5xl dark:bg-yellow-500 text-white rounded-full"
                 to={"/profile"}
                 title="Open Profile"
               >
@@ -82,33 +87,67 @@ const Profile: React.FC = () => {
             <p className="text-lg mb-8">{user?.email}</p>
             <p className="text-sm font-medium mb-4">{user?.role}</p>
             <p className="text-sm font-medium mt-2">{location.address}</p>
-            <p className="my-10 text-xl">
-              You have posted{" "}
-              <span className="font-bold text-blue-800 dark:text-yellow-500">
-                {" "}
-                {user?.reportedPosts.length}{" "}
-              </span>
-              reports.
-            </p>
-            <p className="my-2 text-xl">
-              <span className="font-bold">New Reports:</span>{" "}
-              <span className="font-bold text-blue-800 dark:text-yellow-500">
-                {" "}
-                {reportCounts.NEW}
-              </span>
-            </p>
-            <p className="my-2 text-xl">
-              <span className="font-bold"> Reports In Progress:</span>{" "}
-              <span className="font-bold text-blue-800 dark:text-yellow-500">
-                {reportCounts.IN_PROGRESS}
-              </span>
-            </p>
-            <p className="my-2 text-xl">
-              <span className="font-bold">Completed Reports:</span>{" "}
-              <span className="font-bold text-blue-800 dark:text-yellow-500">
-                {reportCounts.COMPLETED}
-              </span>
-            </p>
+            {user?.role === Role.END_USER ? (
+              <div className="text-center relative z-20">
+        
+                <p className="my-10 text-xl">
+                  You have posted{" "}
+                  <span className="font-bold text-blue-800 dark:text-yellow-500">
+                    {user?.reportedPosts.length}
+                  </span>{" "}
+                  reports.
+                </p>
+                <p className="my-2 text-xl">
+                  <span className="font-bold">New Reports:</span>{" "}
+                  <span className="font-bold text-blue-800 dark:text-yellow-500">
+                    {reportCounts.NEW}
+                  </span>
+                </p>
+                <p className="my-2 text-xl">
+                  <span className="font-bold"> Reports In Progress:</span>{" "}
+                  <span className="font-bold text-blue-800 dark:text-yellow-500">
+                    {reportCounts.IN_PROGRESS}
+                  </span>
+                </p>
+                <p className="my-2 text-xl">
+                  <span className="font-bold">Completed Reports:</span>{" "}
+                  <span className="font-bold text-blue-800 dark:text-yellow-500">
+                    {reportCounts.COMPLETED}
+                  </span>
+                </p>
+
+              </div>
+            ) : (
+              <div className="text-center relative z-20">
+              
+                <p className="my-10 text-xl">
+                  You have been assigned{" "}
+                  <span className="font-bold text-blue-800 dark:text-yellow-500">
+                    {user?.assignedPosts.length}
+                  </span>{" "}
+                  reports.
+                </p>
+                <p className="my-2 text-xl">
+                  <span className="font-bold">New Reports:</span>{" "}
+                  <span className="font-bold text-blue-800 dark:text-yellow-500">
+                    {assignedReportCounts.NEW}
+                  </span>
+                </p>
+                <p className="my-2 text-xl">
+                  <span className="font-bold">Reports In Progress:</span>{" "}
+                  <span className="font-bold text-blue-800 dark:text-yellow-500">
+                    {assignedReportCounts.IN_PROGRESS}
+                  </span>
+                </p>
+                <p className="my-2 text-xl">
+                  <span className="font-bold">Completed Reports:</span>{" "}
+                  <span className="font-bold text-blue-800 dark:text-yellow-500">
+                    {assignedReportCounts.COMPLETED}
+                  </span>
+                </p>
+              </div>
+            )}
+
             <button
               onClick={logout}
               className="mt-4 bg-blue-600 dark:bg-yellow-500 text-white font-bold py-2 px-4 rounded"

@@ -79,7 +79,7 @@ export const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
         transition={{
           duration: 0.8,
           repeat: Infinity,
-          repeatType: "reverse",
+          repeatType: "loop",
         }}
         className={cn(
           "inline-block rounded-sm w-[4px] h-4 md:h-6 lg:h-10 bg-blue-500",
@@ -93,7 +93,6 @@ export const TypewriterEffect: React.FC<TypewriterEffectProps> = ({
 export const TypewriterEffectSmooth: React.FC<TypewriterEffectProps> = ({
   words,
   className,
-  cursorClassName,
 }) => {
   const wordsArray = words.map((word) => ({
     ...word,
@@ -124,25 +123,14 @@ export const TypewriterEffectSmooth: React.FC<TypewriterEffectProps> = ({
         transition={{ duration: 2, ease: "linear", delay: 1 }}
       >
         <div
-          className="max-md:text-2xl xl:text-6xl font-bold"
+          className=""
           style={{ whiteSpace: "nowrap" }}
         >
           {renderWords()}{" "}
         </div>
       </motion.div>
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 0.8,
-          repeat: Infinity,
-          repeatType: "reverse",
-        }}
-        className={cn(
-          "block rounded-sm bg-blue-500",
-          cursorClassName
-        )}
-      />
+      
     </div>
+    //Stuck on this typewriter thingy
   );
 };
