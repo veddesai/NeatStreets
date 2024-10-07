@@ -2,11 +2,13 @@ import React from "react";
 
 import Navbar from "../Components/Navbar";
 
+
 const About: React.FC = () => {
   return (
     <>
     <Navbar/>
     <div className="relative flex flex-col items-center dark:text-white w-full p-12 lg:gap-x-8 max-lg:gap-y-16">
+
       {/* Main Heading */}
       <div className="text-center">
         <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl uppercase text-blue-800 dark:text-yellow-500">
@@ -16,6 +18,7 @@ const About: React.FC = () => {
           Reporting Trash, One Click Away
         </h2>
       </div>
+      
 
       {/* Description Section */}
       <div className="mt-10 max-w-4xl text-center leading-relaxed text-lg md:text-xl">
@@ -33,7 +36,7 @@ const About: React.FC = () => {
       </div>
 
       {/* Features Section */}
-      <div className="mt-12 max-w-3xl">
+      <div className="mt-12 max-w-3xl text-center">
         <h3 className="text-3xl font-semibold mb-6 text-blue-800 dark:text-yellow-500">
           Our Features:
         </h3>
@@ -70,14 +73,7 @@ const About: React.FC = () => {
         </p>
       </div>
 
-      {/* Logo Section */}
-      <div className="mt-12">
-        <img
-          className="bg-cover invert dark:invert-0 shadow-[rgba(50,50,105,0.15)_0px_2px_5px_0px,_rgba(0,0,0,0.05)_0px_1px_1px_0px] dark:shadow-[rgba(0,0,0,0.15)_0px_2px_5px_0px,_rgba(0,0,0,0.3)_0px_1px_1px_0px]"
-          src="/NeatStreets.png"
-          alt="NeatStreets Logo"
-        />
-      </div>
+      
     </div>
     </>
     

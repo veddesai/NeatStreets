@@ -16,4 +16,5 @@ public class SignupDto {
     private String email;
     private String password;
     private Role role;
+    private int points;
 }

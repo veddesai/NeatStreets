@@ -30,10 +30,9 @@ public class PostController {
 
     @GetMapping("/location")
     public ResponseEntity<?> getPostsByLocation(
-            @RequestParam double lat,
-            @RequestParam double lng) {
+            @RequestParam String address) {
 
-        return postService.getPostsByLocation(lat,lng);
+        return postService.getPostsByLocation(address);
     }
 
 

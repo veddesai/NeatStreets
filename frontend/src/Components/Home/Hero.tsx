@@ -1,9 +1,11 @@
 import { BackgroundBeams } from "../ui/BackgroundBeams";
 
+
 const Hero: React.FC = () => {
   
   return (
     <BackgroundBeams className="flex flex-col md:flex-row items-center w-full p-24 lg:gap-x-8 max-lg:gap-y-16">
+  
       <div className="text-center">
         <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl uppercase text-blue-800 dark:text-yellow-500">
           Reporting Trash One Click Away

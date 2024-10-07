@@ -21,6 +21,7 @@ interface SignUpFormData {
   email: string;
   password: string;
   role: Role;
+  points: number;
 }
 
 interface SignInFormData {
@@ -70,6 +71,7 @@ const Form: React.FC<Props> = ({ type }) => {
           email: target.email.value,
           password: target.password.value,
           role: role as Role,
+          points: 0 as number,
         } as SignUpFormData;
         setSignupData(formData);
         const response = await axios.post(`${API_URL}/auth/verify`, formData);

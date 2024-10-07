@@ -20,6 +20,7 @@ interface User {
   email: string;
   role: Role;
   fullname: string;
+  points: number;
 }
 
 interface Post {
@@ -53,7 +54,7 @@ const Posts: React.FC = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(
-        `${API_URL}/posts/location?lat=${location.lat}&lng=${location.lng}`,
+        `${API_URL}/posts/location?address=${location.address}`,
         {
           withCredentials: true,
         }

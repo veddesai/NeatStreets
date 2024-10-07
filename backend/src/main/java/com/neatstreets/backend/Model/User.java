@@ -44,6 +44,8 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private int points;
+
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
@@ -59,6 +61,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "assignedTo")
     @JsonManagedReference
     private List<Post> assignedPosts;
+
+    public void addPoints(int points) {
+        this.points += points;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

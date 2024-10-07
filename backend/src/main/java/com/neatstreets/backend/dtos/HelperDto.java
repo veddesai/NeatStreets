@@ -17,8 +17,8 @@ import java.util.UUID;
 public class HelperDto extends UserDto{
     private List<Post> assignedPosts;
 
-    public HelperDto(UUID id, String username, String email, Role role,String fullname, List<Post> assignedPosts){
-        super(id, username, email, role, fullname);
+    public HelperDto(UUID id, String username, String email, Role role,int points,String fullname, List<Post> assignedPosts){
+        super(id, username, email, role, points, fullname);
         this.assignedPosts = assignedPosts;
     }
 }

@@ -57,6 +57,8 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
+    let watchId: number;
+  
     if (!location.lat || !location.lng) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -64,18 +66,22 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
             const { latitude, longitude } = position.coords;
             fetchAddress(latitude, longitude).then((address) => {
               updateLocation(latitude, longitude, address);
-              setShowAlert(false); // Hide alert if access is granted
+              setShowAlert(false);
             });
           },
           (error) => {
             console.error("Error fetching location:", error);
-            setShowAlert(true); // Show alert if location is not allowed
+            setShowAlert(true);
           },
-          { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+          {
+            enableHighAccuracy: true, // Use high accuracy
+            timeout: 10000,           // 10 seconds timeout
+            maximumAge: 60000,        // Cache for 1 minute
+          }
         );
       }
     } else {
-      const watchId = navigator.geolocation.watchPosition(
+      watchId = navigator.geolocation.watchPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           if (isLocationChanged(latitude, longitude)) {
@@ -85,13 +91,21 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
           }
         },
         (error) => console.error("Error watching location:", error),
-        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        {
+          enableHighAccuracy: true, // Use high accuracy
+          timeout: 10000,           // 10 seconds timeout
+          maximumAge: 60000,        // Cache for 1 minute
+        }
       );
-
-      return () => navigator.geolocation.clearWatch(watchId);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
+    return () => {
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
   }, [location.lat, location.lng]);
+  
 
   const fetchAddress = async (lat: number, lng: number): Promise<string> => {
     try {

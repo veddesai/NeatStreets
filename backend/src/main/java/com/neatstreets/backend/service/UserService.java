@@ -43,6 +43,7 @@ public class UserService {
                             user.getRealUsername(),
                             user.getEmail(),
                             user.getRole(),
+                            user.getPoints(),
                             user.getFullname(),
                             user.getReportedPosts()
                     );
@@ -53,6 +54,7 @@ public class UserService {
                             user.getRealUsername(),
                             user.getEmail(),
                             user.getRole(),
+                            user.getPoints(),
                             user.getFullname(),
                             user.getAssignedPosts()
                     );
@@ -64,6 +66,7 @@ public class UserService {
                             user.getRealUsername(),
                             user.getEmail(),
                             user.getRole(),
+                            user.getPoints(),
                             user.getFullname(),
                             user.getReportedPosts(),
                             user.getAssignedPosts()
@@ -92,6 +95,7 @@ public class UserService {
                         post1.getReportedBy().getRealUsername(),
                         post1.getReportedBy().getEmail(),
                         post1.getReportedBy().getRole(),
+                        post1.getReportedBy().getPoints(),
                         post1.getReportedBy().getFullname()
                 );
 
@@ -101,6 +105,7 @@ public class UserService {
                         post1.getAssignedTo().getRealUsername(),
                         post1.getAssignedTo().getEmail(),
                         post1.getAssignedTo().getRole(),
+                        post1.getAssignedTo().getPoints(),
                         post1.getAssignedTo().getFullname()
                 ) : null;
 
@@ -135,6 +140,7 @@ public class UserService {
                 user.getUsername(),
                 user.getEmail(),
                 user.getRole(),
+                user.getPoints(),
                 user.getFullname()
         );
     }

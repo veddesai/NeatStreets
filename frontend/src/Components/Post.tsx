@@ -18,6 +18,7 @@ interface User {
   email: string;
   role: Role;
   fullname: string;
+  points: number;
 }
 
 interface PostProps {
@@ -204,12 +205,12 @@ const Post: React.FC<PostProps> = ({
 
       {/* Post Reporter */}
       <div className="flex items-center mb-2">
-        <div className="mr-2 text-2xl border-2 w-10 h-10 border-slate-600 dark:border-white bg-blue-600 text-center dark:bg-yellow-500 text-white rounded-full">
+        <div className="mr-2 text-2xl border-2 w-10 h-10 border-slate-600 dark:border-white bg-blue-800 text-center dark:bg-yellow-500 text-white rounded-full">
           {reportedBy?.username?.charAt(0)}
         </div>
         <span className="text-gray-700 dark:text-gray-300">
           Reported by:{" "}
-          <span className="text-blue-600 dark:text-yellow-500">
+          <span className="font-extrabold text-blue-800 dark:text-yellow-500">
             {reportedBy.fullname}
           </span>
         </span>
@@ -221,7 +222,7 @@ const Post: React.FC<PostProps> = ({
           <MdOutlineAssignmentTurnedIn className="mr-2 text-2xl text-gray-500 dark:text-gray-300" />
           <span className="text-gray-700 dark:text-gray-300">
             Assigned to:{" "}
-            <span className="font-extrabold">{postAssignedTo.fullname}</span>
+            <span className="font-extrabold text-blue-800 dark:text-yellow-500">{postAssignedTo.fullname}</span>
           </span>
         </div>
       )}

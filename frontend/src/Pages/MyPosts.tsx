@@ -20,6 +20,7 @@ interface User {
   email: string;
   role: Role;
   fullname: string;
+  points: number;
 }
 
 interface Post {

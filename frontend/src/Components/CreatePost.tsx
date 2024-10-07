@@ -6,9 +6,6 @@ import { API_URL } from "../config/config";
 import { useLocation } from "../context/LocationContext";
 import { FaTrash } from "react-icons/fa";
 
-
-
-
 interface Post {
   id: string;
   description: string;
@@ -35,6 +32,7 @@ interface User {
   email: string;
   role: Role;
   fullname: string;
+  points: number;
 }
 
 type PostStatus = "NEW" | "IN_PROGRESS" | "COMPLETED";
@@ -45,11 +43,11 @@ interface CreatePostProps {
 
 const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
   const authContext = useContext(AuthContext);
-  const {location} = useLocation();
+  const { location } = useLocation();
   if (authContext === undefined) {
     throw new Error("AuthContext must be used within an AuthProvider");
   }
-  
+
   const { user, isAuthenticated } = authContext;
 
   const [postContent, setPostContent] = useState({
@@ -61,9 +59,9 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
     lng: location.lng as number,
     address: location.address as string,
     reportedBy: {
-      id: user?.id || "",  
+      id: user?.id || "",
       email: user?.email || "",
-      fullname: user?.fullname || "Unknown User", 
+      fullname: user?.fullname || "Unknown User",
       username: user?.username || "",
       role: Role.END_USER,
     } as User,
@@ -90,7 +88,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
       const formData = new FormData();
       formData.append("name", postContent.image!.name);
       formData.append("file", postContent.image!);
-      
+
       // For Just Image Upload
       const uploadResponse = await axios.post(`${API_URL}/upload`, formData, {
         headers: {
@@ -109,13 +107,13 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
         imageUrl: imageUrl,
         lat: postContent.lat,
         lng: postContent.lng,
-        address: postContent.address
+        address: postContent.address,
       };
-      
 
       const response = await axios.post(`${API_URL}/posts/create`, postData, {
         withCredentials: true,
       });
+      
       const newPost = response.data;
       onPostCreated(newPost);
 
@@ -132,6 +130,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
           fullname: user?.fullname || "Unknown User",
           username: user?.username || "",
           role: Role.END_USER,
+          points: user?.points || 0,
         }, // Reset reportedBy
       }));
 

@@ -19,8 +19,8 @@ public class AdminDto extends UserDto{
     private List<Post> reportedPosts;
     private List<Post> assignedPosts;
 
-    public AdminDto(UUID id, String realUsername, String email, Role role, String fullname, List<Post> reportedPosts, List<Post> assignedPosts){
-        super(id, realUsername, email, role, fullname);
+    public AdminDto(UUID id, String realUsername, String email, Role role,int points, String fullname, List<Post> reportedPosts, List<Post> assignedPosts){
+        super(id, realUsername, email, role,points, fullname);
         this.reportedPosts = reportedPosts;
         this.assignedPosts = assignedPosts;
     }

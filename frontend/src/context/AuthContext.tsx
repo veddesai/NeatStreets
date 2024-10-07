@@ -15,6 +15,7 @@ interface User {
   fullname: string;
   email: string;
   role: Role;
+  points: number;
   password: string;
   reportedPosts: Post[];
   assignedPosts: Post[];
@@ -23,7 +24,9 @@ interface Post {
   id: string;
   description: string;
   imageUrl: string;
-  location: string;
+  lat: number;
+  lng: number;
+  address: string;
   reportedAt: string;
   status: "NEW" | "IN_PROGRESS" | "COMPLETED";
   reportedBy: User;

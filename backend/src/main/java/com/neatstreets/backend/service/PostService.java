@@ -23,11 +23,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-;
+    private final LeaderboardService leaderboardService;
+    ;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository){
+    public PostService(PostRepository postRepository, UserRepository userRepository, LeaderboardService leaderboardService){
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.leaderboardService = leaderboardService;
     }
 
     public ResponseEntity<?> createPost(@RequestBody PostDto postDto) {
@@ -52,6 +54,9 @@ public class PostService {
                 .setCompletionTime(postDto.getCompletionTime());
 
         postRepository.save(post);
+
+        leaderboardService.addPointsToUser(reportedByUser.get().getId(),1);
+
         PostDto postDtos = new PostDto(post.getId(), post.getDescription(), post.getImageUrl(), post.getLat(),post.getLng(),post.getAddress(), post.getReportedAt(), post.getStatus(), postDto.getReportedBy(), postDto.getAssignedTo(), post.getCompletionTime());
         return ResponseEntity.status(HttpStatus.CREATED).body(postDtos);
     }
@@ -61,8 +66,8 @@ public class PostService {
         return ResponseEntity.ok(postRepository.findAll());
     }
 
-    public ResponseEntity<List<PostDto>> getPostsByLocation(double lat, double lng) {
-        List<Post> posts = postRepository.findByLatAndLngOrderByReportedAtDesc(lat, lng).orElseThrow(()-> new Error("Can't find posts by your location."));
+    public ResponseEntity<List<PostDto>> getPostsByLocation(String address) {
+        List<Post> posts = postRepository.findByAddressOrderByReportedAtDesc(address).orElseThrow(()-> new Error("Can't find posts by your location."));
 
         if (posts.isEmpty()) {
             throw new RuntimeException("Cannot find Posts at the specified location.");
@@ -129,6 +134,8 @@ public class PostService {
         post.setCompletionTime(completeRequest.getCompletionTime());
         postRepository.save(post);
 
+        leaderboardService.addPointsToUser(post.getAssignedTo().getId(),1);
+
         return ResponseEntity.ok("Post marked as completed");
     }
 
@@ -141,6 +148,7 @@ public class PostService {
                 post.getReportedBy().getRealUsername(),
                 post.getReportedBy().getEmail(),
                 post.getReportedBy().getRole(),
+                post.getReportedBy().getPoints(),
                 post.getReportedBy().getFullname()
         );
 
@@ -149,6 +157,7 @@ public class PostService {
                 post.getAssignedTo().getRealUsername(),
                 post.getAssignedTo().getEmail(),
                 post.getAssignedTo().getRole(),
+                post.getAssignedTo().getPoints(),
                 post.getAssignedTo().getFullname()
         ) : null;
 
