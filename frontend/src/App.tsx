@@ -13,6 +13,7 @@ import { LocationProvider } from "./context/LocationContext";
 import Success from "./Pages/Success";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
+import PostsAssigned from "./Pages/PostsAssigned";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
               <Route path="/success" element={<Success/>}/>
               <Route path="/profile" element={<Profile />} />
               <Route path="/posts" element={<Posts />} />
+              <Route path="/posts/assigned" element={<PostsAssigned/>} />
               <Route path="/posts/:id" element={<MyPosts />} />
             </Routes>
           </LocationProvider>

@@ -16,10 +16,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AdminDto extends UserDto{
 
-    private List<Post> reportedPosts;
-    private List<Post> assignedPosts;
+    private List<PostDto> reportedPosts;
+    private List<PostDto> assignedPosts;
 
-    public AdminDto(UUID id, String realUsername, String email, Role role,int points, String fullname, List<Post> reportedPosts, List<Post> assignedPosts){
+    public AdminDto(UUID id, String realUsername, String email, Role role,int points, String fullname, List<PostDto> reportedPosts, List<PostDto> assignedPosts){
         super(id, realUsername, email, role,points, fullname);
         this.reportedPosts = reportedPosts;
         this.assignedPosts = assignedPosts;

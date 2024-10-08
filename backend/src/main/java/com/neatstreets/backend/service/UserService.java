@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -30,14 +31,26 @@ public class UserService {
         this.postRepository = postRepository;
     }
 
-    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication){
+    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
             User authenticatedUser = (User) authentication.getPrincipal();
             Optional<User> userOptional = userRepository.findById(authenticatedUser.getId());
 
             if (userOptional.isPresent() && userOptional.get().getId().equals(authenticatedUser.getId())) {
                 User user = userOptional.get();
-                if(user.getRole().equals(Role.END_USER)){
+
+                // Convert reportedPosts from Post to PostDto
+                List<PostDto> reportedPosts = user.getReportedPosts().stream()
+                        .map(post -> mapToPostDto(post))
+                        .collect(Collectors.toList());
+
+                // Convert assignedPosts from Post to PostDto
+                List<PostDto> assignedPosts = user.getAssignedPosts().stream()
+                        .map(post -> mapToPostDto(post))
+                        .collect(Collectors.toList());
+
+                // Role-based DTO construction
+                if (user.getRole().equals(Role.END_USER)) {
                     EndUserDto userDto = new EndUserDto(
                             user.getId(),
                             user.getRealUsername(),
@@ -45,7 +58,7 @@ public class UserService {
                             user.getRole(),
                             user.getPoints(),
                             user.getFullname(),
-                            user.getReportedPosts()
+                            reportedPosts
                     );
                     return ResponseEntity.ok(userDto);
                 } else if (user.getRole().equals(Role.HELPER)) {
@@ -56,11 +69,10 @@ public class UserService {
                             user.getRole(),
                             user.getPoints(),
                             user.getFullname(),
-                            user.getAssignedPosts()
+                            assignedPosts
                     );
                     return ResponseEntity.ok(userDto);
-                }
-                else{
+                } else {
                     AdminDto userDto = new AdminDto(
                             user.getId(),
                             user.getRealUsername(),
@@ -68,16 +80,16 @@ public class UserService {
                             user.getRole(),
                             user.getPoints(),
                             user.getFullname(),
-                            user.getReportedPosts(),
-                            user.getAssignedPosts()
+                            reportedPosts,
+                            assignedPosts
                     );
                     return ResponseEntity.ok(userDto);
                 }
-
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
 
     public ResponseEntity<List<PostDto>> getUserPosts(UUID userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -132,6 +144,21 @@ public class UserService {
         else{
             throw new RuntimeException("User with id " + userId + " not found");
         }
+    }
+    private PostDto mapToPostDto(Post post) {
+        return new PostDto(
+                post.getId(),
+                post.getDescription(),
+                post.getImageUrl(),
+                post.getLat(),
+                post.getLng(),
+                post.getAddress(),
+                post.getReportedAt(),
+                post.getStatus(),
+                mapToUserDto(post.getReportedBy()), // Mapping User to UserDto
+                mapToUserDto(post.getAssignedTo()), // Mapping User to UserDto if present
+                post.getCompletionTime()
+        );
     }
 
     private UserDto mapToUserDto(User user) {

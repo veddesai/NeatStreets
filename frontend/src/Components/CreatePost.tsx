@@ -33,6 +33,8 @@ interface User {
   role: Role;
   fullname: string;
   points: number;
+  reportedPosts?: Post[];
+  assignedPosts?:Post[];
 }
 
 type PostStatus = "NEW" | "IN_PROGRESS" | "COMPLETED";

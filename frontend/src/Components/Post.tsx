@@ -211,7 +211,7 @@ const Post: React.FC<PostProps> = ({
         <span className="text-gray-700 dark:text-gray-300">
           Reported by:{" "}
           <span className="font-extrabold text-blue-800 dark:text-yellow-500">
-            {reportedBy.fullname}
+            {reportedBy?.fullname}
           </span>
         </span>
       </div>

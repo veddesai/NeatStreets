@@ -4,6 +4,7 @@ import Navbar from "../Components/Navbar";
 import HowItWorks from "../Components/Home/HowItWorks";
 import GoToMapSection from "../Components/Home/GoToMapSection";
 import { SignUpRedirect } from "../Components/Home/SignUpRedirect";
+import Footer from "../Components/Footer";
 
 
 
@@ -30,6 +31,7 @@ const Home = () => {
         <hr className="w-[95%] mx-auto h-1 bg-blue-800 dark:bg-slate-100"/>
         <TrashSection />
         <hr className="w-[95%] mx-auto h-1 bg-blue-800 dark:bg-slate-100"/>
+      <Footer/>
       </div>
     </>
   );

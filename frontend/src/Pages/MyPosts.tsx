@@ -21,6 +21,8 @@ interface User {
   role: Role;
   fullname: string;
   points: number;
+  reportedPosts?:Post[];
+  assignedPosts?:Post[];
 }
 
 interface Post {
@@ -189,6 +191,7 @@ const MyPosts: React.FC = () => {
           )}
         </div>
       </div>
+    
     </div>
   );
 };

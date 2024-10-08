@@ -1,6 +1,7 @@
 import React from "react";
 
 import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
 
 
 const About: React.FC = () => {
@@ -75,6 +76,8 @@ const About: React.FC = () => {
 
       
     </div>
+    <hr className="w-[95%] mx-auto h-1 bg-blue-800 dark:bg-slate-100"/>
+    <Footer/>
     </>
     
   );

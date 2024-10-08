@@ -70,9 +70,9 @@ const Map: React.FC = () => {
         }).bindPopup(`
           <div>
             <h3>${report.description}</h3>
+            <img class="my-2" src="${report.imageUrl}"
             <p>Status: ${report.status}</p>
             <p>Reported At: ${new Date(report.reportedAt).toLocaleDateString()}</p>
-            <a href="/posts">View Report</a>
           </div>
         `);
 

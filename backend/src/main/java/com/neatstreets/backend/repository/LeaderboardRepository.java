@@ -9,5 +9,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface LeaderboardRepository extends JpaRepository<User, UUID> {
-    Optional<List<User>> findByRoleOrderByPoints(Role role);
+    Optional<List<User>> findByRoleOrderByPointsDesc(Role role);
 }

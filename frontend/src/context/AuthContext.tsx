@@ -17,8 +17,8 @@ interface User {
   role: Role;
   points: number;
   password: string;
-  reportedPosts: Post[];
-  assignedPosts: Post[];
+  reportedPosts?: Post[];
+  assignedPosts?: Post[];
 }
 interface Post {
   id: string;

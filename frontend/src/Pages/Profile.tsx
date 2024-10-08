@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 import Navbar from "../Components/Navbar";
 import { useLocation } from "../context/LocationContext";
-
-
+import axios from "axios";
+import { API_URL } from "../config/config";
 
 enum Role {
   END_USER = "END_USER",
@@ -46,6 +46,31 @@ const Profile: React.FC = () => {
   const { user, isAuthenticated, logout } = authContext;
   const { location } = useLocation();
 
+  // State for the leaderboard
+  const [leaderboard, setLeaderboard] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await axios.get(
+          `${API_URL}/leaderboard/role/${user?.role}`,
+          { withCredentials: true }
+        );
+        setLeaderboard(response.data);
+      } catch (err) {
+        setError("Failed to load leaderboard data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchLeaderboard();
+    }
+  }, [isAuthenticated, user?.role]);
+
   // Count reports by their status
   const countReportsByStatus = (posts: Post[]) => {
     return posts.reduce(
@@ -72,89 +97,116 @@ const Profile: React.FC = () => {
   return (
     <>
       <Navbar />
-      <div className="relative p-6 bg-white rounded shadow-md w-full max-w-4xl mx-auto dark:bg-[#1c1f26]">
-        <h3 className="text-2xl font-semibold mb-6 dark:text-white">
-          User Profile
-        </h3>
+      <div className="p-4">
+        <div className="relative border-2 my-8 p-6 bg-white rounded shadow-md w-full max-w-4xl mx-auto dark:bg-[#1c1f26]">
+          <h3 className="text-2xl font-semibold mb-6 dark:text-white">
+            User Profile
+          </h3>
 
-        <div className="relative flex items-center space-x-4 mb-6">
-
-          <div className="w-24 h-24 rounded-full bg-blue-600 text-white flex items-center justify-center text-4xl font-semibold">
-            {user?.fullname ? user.fullname[0] : "U"} 
-          </div>
-          <div className="relative flex flex-col gap-2">
-            <h4 className="text-lg text-blue-800 dark:text-yellow-500 font-medium ">
-              {user?.fullname ?? "No Name"} 
-            </h4>
-            <p className="text-sm dark:text-gray-400">{location?.address}</p>
-            <p className="text-sm dark:text-gray-400">{user?.email}</p>
-            <p className="text-sm dark:text-gray-400">{user?.role}</p>
-            <button
-              onClick={logout}
-              className="bg-red-600 w-max text-white px-4 py-2 rounded mt-2"
+          <div className="relative flex items-center space-x-4 mb-6">
+            <div className="w-16 h-16 rounded-full bg-blue-600 text-white flex items-center justify-center text-4xl font-semibold">
+              {user?.fullname ? user.fullname[0] : "U"}
+            </div>
+            <div className="relative flex flex-col gap-2">
+              <h4 className="text-lg text-blue-800 dark:text-yellow-500 font-medium ">
+                {user?.fullname ?? "No Name"}
+              </h4>
+              <p className="text-sm dark:text-gray-400">{location?.address}</p>
+              <p className="text-sm dark:text-gray-400">{user?.email}</p>
+              <p className="text-sm dark:text-gray-400">{user?.role}</p>
+              <button
+                onClick={logout}
+                className="bg-red-600 w-max text-white px-4 py-2 rounded mt-2"
               >
-              Logout
-            </button>
+                Logout
+              </button>
+            </div>
           </div>
-        </div>
 
+          <div className="space-y-6">
+            {user?.reportedPosts && (
+              <>
+                <h4 className="text-xl font-semibold dark:text-white">
+                  Report Summary
+                </h4>
+                <div className="relative grid max-sm:grid-cols-1 grid-cols-3 gap-4">
+                  <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
+                    <h5 className="text-sm dark:text-gray-400">New Reports</h5>
+                    <p className="text-lg font-bold dark:text-white">
+                      {reportCounts.NEW}
+                    </p>
+                  </div>
+                  <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
+                    <h5 className="text-sm dark:text-gray-400">In Progress</h5>
+                    <p className="text-lg font-bold dark:text-white">
+                      {reportCounts.IN_PROGRESS}
+                    </p>
+                  </div>
+                  <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
+                    <h5 className="text-sm dark:text-gray-400">Completed</h5>
+                    <p className="text-lg font-bold dark:text-white">
+                      {reportCounts.COMPLETED}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
 
-        <div className="space-y-6">
-          {user?.reportedPosts && (
-            <>
-              <h4 className="text-xl font-semibold dark:text-white">
-                Report Summary
-              </h4>
+            {user?.assignedPosts && (
+              <>
+                <h4 className="text-xl font-semibold dark:text-white">
+                  Assigned Reports
+                </h4>
+                <div className="relative grid max-sm:grid-cols-1 grid-cols-3 gap-4">
+                  <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
+                    <h5 className="text-sm dark:text-gray-400">New Assigned</h5>
+                    <p className="text-lg font-bold dark:text-white">
+                      {assignedReportCounts.NEW}
+                    </p>
+                  </div>
+                  <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
+                    <h5 className="text-sm dark:text-gray-400">In Progress</h5>
+                    <p className="text-lg font-bold dark:text-white">
+                      {assignedReportCounts.IN_PROGRESS}
+                    </p>
+                  </div>
+                  <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
+                    <h5 className="text-sm dark:text-gray-400">Completed</h5>
+                    <p className="text-lg font-bold dark:text-white">
+                      {assignedReportCounts.COMPLETED}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="mt-12">
+            <h4 className="text-xl font-semibold mb-6 dark:text-white">
+              {user?.role === "END_USER" ? "User" : "Helper"} Leaderboard
+            </h4>
+            {loading ? (
+              <p>Loading leaderboard...</p>
+            ) : error ? (
+              <p className="text-red-500">{error}</p>
+            ) : (
               <div className="relative grid max-sm:grid-cols-1 grid-cols-3 gap-4">
-                <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
-                  <h5 className="text-sm dark:text-gray-400">New Reports</h5>
-                  <p className="text-lg font-bold dark:text-white">
-                    {reportCounts.NEW}
-                  </p>
-                </div>
-                <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
-                  <h5 className="text-sm dark:text-gray-400">In Progress</h5>
-                  <p className="text-lg font-bold dark:text-white">
-                    {reportCounts.IN_PROGRESS}
-                  </p>
-                </div>
-                <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
-                  <h5 className="text-sm dark:text-gray-400">Completed</h5>
-                  <p className="text-lg font-bold dark:text-white">
-                    {reportCounts.COMPLETED}
-                  </p>
-                </div>
+                {leaderboard.map((leader) => (
+                  <div
+                    key={leader.id}
+                    className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded"
+                  >
+                    <h5 className="text-sm dark:text-gray-400">
+                      {leader.fullname}
+                    </h5>
+                    <p className="text-lg font-bold dark:text-white">
+                      {leader.points} points
+                    </p>
+                  </div>
+                ))}
               </div>
-            </>
-          )}
-
-          {user?.assignedPosts && (
-            <>
-              <h4 className="text-xl font-semibold dark:text-white">
-                Assigned Reports
-              </h4>
-              <div className="relative grid max-sm:grid-cols-1 grid-cols-3 gap-4">
-                <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
-                  <h5 className="text-sm dark:text-gray-400">New Assigned</h5>
-                  <p className="text-lg font-bold dark:text-white">
-                    {assignedReportCounts.NEW}
-                  </p>
-                </div>
-                <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
-                  <h5 className="text-sm dark:text-gray-400">In Progress</h5>
-                  <p className="text-lg font-bold dark:text-white">
-                    {assignedReportCounts.IN_PROGRESS}
-                  </p>
-                </div>
-                <div className="relative p-4 bg-gray-200 dark:bg-gray-700 rounded">
-                  <h5 className="text-sm dark:text-gray-400">Completed</h5>
-                  <p className="text-lg font-bold dark:text-white">
-                    {assignedReportCounts.COMPLETED}
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </>

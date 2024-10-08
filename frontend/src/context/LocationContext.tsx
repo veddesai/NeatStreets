@@ -46,19 +46,10 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
     const newLocation = { lat, lng, address };
     setLocation(newLocation);
     sessionStorage.setItem("location", JSON.stringify(newLocation));
-    setLocationGranted(true); // Location access granted
-  };
-
-  const isLocationChanged = (
-    newLat: number | null,
-    newLng: number | null
-  ): boolean => {
-    return newLat !== location.lat || newLng !== location.lng;
+    setLocationGranted(true);
   };
 
   useEffect(() => {
-    let watchId: number;
-  
     if (!location.lat || !location.lng) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -74,38 +65,14 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
             setShowAlert(true);
           },
           {
-            enableHighAccuracy: true, // Use high accuracy
-            timeout: 10000,           // 10 seconds timeout
-            maximumAge: 60000,        // Cache for 1 minute
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 60000,
           }
         );
       }
-    } else {
-      watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          if (isLocationChanged(latitude, longitude)) {
-            fetchAddress(latitude, longitude).then((address) => {
-              updateLocation(latitude, longitude, address);
-            });
-          }
-        },
-        (error) => console.error("Error watching location:", error),
-        {
-          enableHighAccuracy: true, // Use high accuracy
-          timeout: 10000,           // 10 seconds timeout
-          maximumAge: 60000,        // Cache for 1 minute
-        }
-      );
     }
-  
-    return () => {
-      if (watchId) {
-        navigator.geolocation.clearWatch(watchId);
-      }
-    };
   }, [location.lat, location.lng]);
-  
 
   const fetchAddress = async (lat: number, lng: number): Promise<string> => {
     try {

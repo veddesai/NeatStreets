@@ -17,9 +17,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EndUserDto extends UserDto{
 
-    private List<Post> reportedPosts;
+    private List<PostDto> reportedPosts;
 
-    public EndUserDto(UUID id, String realUsername, String email, Role role, int points, String fullname, List<Post> reportedPosts) {
+    public EndUserDto(UUID id, String realUsername, String email, Role role, int points, String fullname, List<PostDto> reportedPosts) {
         super(id, realUsername, email, role,points, fullname);
         this.reportedPosts = reportedPosts;
     }

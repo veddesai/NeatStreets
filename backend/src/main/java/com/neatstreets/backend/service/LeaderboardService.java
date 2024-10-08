@@ -18,7 +18,7 @@ public class LeaderboardService {
     }
 
     public ResponseEntity<?> getTopUsersByRole(Role role) {
-        return ResponseEntity.ok(leaderboardRepository.findByRoleOrderByPoints(role));
+        return ResponseEntity.ok(leaderboardRepository.findByRoleOrderByPointsDesc(role));
     }
 
     public ResponseEntity<?> addPointsToUser(UUID userId, int points) {

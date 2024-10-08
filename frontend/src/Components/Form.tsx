@@ -75,6 +75,7 @@ const Form: React.FC<Props> = ({ type }) => {
         } as SignUpFormData;
         setSignupData(formData);
         const response = await axios.post(`${API_URL}/auth/verify`, formData);
+     
         if (
           response.status == 200 &&
           response.data.message === "OTP sent to your email."
