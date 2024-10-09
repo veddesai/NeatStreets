@@ -32,63 +32,87 @@ public class UserService {
     }
 
     public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
+        // Check if authentication is valid
         if (authentication != null && authentication.isAuthenticated()) {
+            // Get authenticated user
             User authenticatedUser = (User) authentication.getPrincipal();
             Optional<User> userOptional = userRepository.findById(authenticatedUser.getId());
 
-            if (userOptional.isPresent() && userOptional.get().getId().equals(authenticatedUser.getId())) {
+            // Validate user presence
+            if (userOptional.isPresent()) {
                 User user = userOptional.get();
 
-                // Convert reportedPosts from Post to PostDto
-                List<PostDto> reportedPosts = user.getReportedPosts().stream()
-                        .map(post -> mapToPostDto(post))
-                        .collect(Collectors.toList());
+                // Fetch reported posts
+                List<PostDto> reportedPosts;
+                try {
+                    reportedPosts = postRepository.findPostsByReportedBy(user)
+                            .orElseThrow(() -> new RuntimeException("No reported posts found for user"))
+                            .stream()
+                            .map(this::mapToPostDto)
+                            .collect(Collectors.toList());
+                } catch (RuntimeException e) {
+                    // Handle specific case or log error
+                    reportedPosts = new ArrayList<>(); // or handle accordingly
+                }
 
-                // Convert assignedPosts from Post to PostDto
-                List<PostDto> assignedPosts = user.getAssignedPosts().stream()
-                        .map(post -> mapToPostDto(post))
-                        .collect(Collectors.toList());
+                // Fetch assigned posts
+                List<PostDto> assignedPosts;
+                try {
+                    assignedPosts = postRepository.findPostsByAssignedTo(user)
+                            .orElseThrow(() -> new RuntimeException("No assigned posts found for user"))
+                            .stream()
+                            .map(this::mapToPostDto)
+                            .collect(Collectors.toList());
+                } catch (RuntimeException e) {
+                    // Handle specific case or log error
+                    assignedPosts = new ArrayList<>(); // or handle accordingly
+                }
 
                 // Role-based DTO construction
-                if (user.getRole().equals(Role.END_USER)) {
-                    EndUserDto userDto = new EndUserDto(
-                            user.getId(),
-                            user.getRealUsername(),
-                            user.getEmail(),
-                            user.getRole(),
-                            user.getPoints(),
-                            user.getFullname(),
-                            reportedPosts
-                    );
-                    return ResponseEntity.ok(userDto);
-                } else if (user.getRole().equals(Role.HELPER)) {
-                    HelperDto userDto = new HelperDto(
-                            user.getId(),
-                            user.getRealUsername(),
-                            user.getEmail(),
-                            user.getRole(),
-                            user.getPoints(),
-                            user.getFullname(),
-                            assignedPosts
-                    );
-                    return ResponseEntity.ok(userDto);
-                } else {
-                    AdminDto userDto = new AdminDto(
-                            user.getId(),
-                            user.getRealUsername(),
-                            user.getEmail(),
-                            user.getRole(),
-                            user.getPoints(),
-                            user.getFullname(),
-                            reportedPosts,
-                            assignedPosts
-                    );
-                    return ResponseEntity.ok(userDto);
+                UserDto userDto;
+                switch (user.getRole()) {
+                    case END_USER:
+                        userDto = new EndUserDto(
+                                user.getId(),
+                                user.getRealUsername(),
+                                user.getEmail(),
+                                user.getRole(),
+                                user.getPoints(),
+                                user.getFullname(),
+                                reportedPosts
+                        );
+                        break;
+                    case HELPER:
+                        userDto = new HelperDto(
+                                user.getId(),
+                                user.getRealUsername(),
+                                user.getEmail(),
+                                user.getRole(),
+                                user.getPoints(),
+                                user.getFullname(),
+                                assignedPosts
+                        );
+                        break;
+                    default:
+                        userDto = new AdminDto(
+                                user.getId(),
+                                user.getRealUsername(),
+                                user.getEmail(),
+                                user.getRole(),
+                                user.getPoints(),
+                                user.getFullname(),
+                                reportedPosts,
+                                assignedPosts
+                        );
+                        break;
                 }
+                return ResponseEntity.ok(userDto);
             }
         }
+        // Return UNAUTHORIZED status if user is not authenticated
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
 
 
     public ResponseEntity<List<PostDto>> getUserPosts(UUID userId) {
